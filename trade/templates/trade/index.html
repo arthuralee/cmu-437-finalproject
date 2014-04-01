@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %} microBlog {% endblock %}
+
+
+{% block errors %}
+  {% for error in errors %}
+    <p class="alert alert-danger">
+    {{error}}
+    </p>
+  {% endfor %}
+{% endblock %}
+
+{% block header %}Trading Post{% endblock %}
+{% block subheader %}{{user.first_name}} {{user.last_name}}{% endblock %}
+
+{% block sidebar %}
+{% endblock %}
+
+{% block content %}
+<div class="blog">
+  <ul class="item-list">
+    {% for item in items %}
+      <li class="panel panel-default">
+        <div class="panel-body">
+          {% if item.image %}
+            <img src="{% url 'image' item.id %}">
+          {% endif %}
+          <div class="item-info">
+            <div class="item-desc">{{item.desc}}</div>
+            Posted: {{item.date_time}} (<a href="/delete-item/{{item.id}}">x</a>)
+          </div>
+        </div>
+      </li>
+    {% endfor %}
+  </ul>
+
+  <form action="/add-item" method="post" enctype="multipart/form-data">
+     <label>Add item</label>
+    <input type="file" name="image" text="Attach image">
+    <textarea class="form-control" type="text" name="desc"
+     maxlength="160" placeholder="Description"></textarea>
+    <input type="submit" class="btn btn-info" text="Add">
+    {% csrf_token %}
+  </form>
+
+{% endblock %}
+</div>
+

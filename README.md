@@ -1,4 +1,4 @@
-team17
-======
+django-example
+==============
 
-15-437/15-637 repo for lxl
+Example Django Project

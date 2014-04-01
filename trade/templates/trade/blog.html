@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %} microBlog {% endblock %}
+
+
+{% block errors %}
+  {% for error in errors %}
+    <p class="alert alert-danger">
+    {{error}}
+    </p>
+  {% endfor %}
+{% endblock %}
+
+{% block header %} microBlog {{username}} {% endblock %}
+{% block subheader %} by {{first_name}} {{last_name}}. {% endblock %}
+
+{% block content %}
+<div class="blog">
+{% for post in posts %}
+  <blockquote>
+  <p>
+  {% if post.image %}
+    <img src="{% url 'image' post.id %}">
+  {% endif %} <br>
+  {{post}} <br>
+  <small> Date Posted: {{post.date_time}} </small>
+  </p>
+  </blockquote>
+{% endfor %}
+</div>
+{% endblock %}
+
+
