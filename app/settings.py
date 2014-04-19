@@ -101,6 +101,8 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.static",
     "django.core.context_processors.tz",
     "django.contrib.messages.context_processors.messages",
+    "trade.context_processors.get_users",
+    "trade.context_processors.get_trades"
 )
 
 ROOT_URLCONF = 'app.urls'
@@ -119,10 +121,10 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # Uncomment the next line to enable the admin:
-    # 'django.contrib.admin',
+    'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
-    'trade', 
+    'trade',
 )
 
 # Used by the authentication system for the blog application.

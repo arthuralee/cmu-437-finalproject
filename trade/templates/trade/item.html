@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %} Profile {% endblock %}
+
+
+{% block errors %}
+  {% for error in errors %}
+    <p class="alert alert-danger">
+    {{error}}
+    </p>
+  {% endfor %}
+{% endblock %}
+
+{% block header %}Item details{% endblock %}
+{% block subheader %}{{item.desc}}{% endblock %}
+
+{% block content %}
+
+  {% if item.image %}
+    <h4>Image</h4>
+    <img src="{% url 'image' item.id %}">
+  {% endif %}
+  <br><br>
+
+  <h4>Description</h4>
+  {{item.desc}}
+  <br><br>
+
+  <h4>User questions</h4>
+  {% for question in questions %}
+  <div class="panel panel-default">
+    <div class="panel-heading">{{question.user.username}}: <strong>{{question.q}}</strong></div>
+    <div class="panel-body">
+      {% if question.a %}
+        {{question.item.user.username}}: <strong>{{question.a}}</strong>
+      {% else %}
+        <em>The owner has not responded to this question</em>
+      {% endif %}
+    </div>
+  </div>
+  {% endfor %}
+
+  <form class="form-inline" role="form" method="post" action="/item/{{item.id}}/question">
+    <div class="form-group">
+      <input type="text" class="form-control" name="q" placeholder="Ask a question" size="100" />
+      <button type="submit" class="btn btn-default">Ask</button>
+      {% csrf_token %}
+    </div>
+  </form>
+
+</div>
+{% endblock %}

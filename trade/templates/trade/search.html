@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %} Profile {% endblock %}
+
+
+{% block errors %}
+  {% for error in errors %}
+    <p class="alert alert-danger">
+    {{error}}
+    </p>
+  {% endfor %}
+{% endblock %}
+
+{% block header %}Search results{% endblock %}
+{% block subheader %}{{q}}{% endblock %}
+
+{% block content %}
+<div class="profile">
+  Showing search results for <strong>{{q}}</strong>
+</div>
+
+<div class="blog">
+  <ul class="item-list">
+    {% for item in items %}
+      <li class="panel panel-default">
+        <div class="panel-body">
+          {% if item.image %}
+            <img src="{% url 'image' item.id %}">
+          {% endif %}
+          <div class="item-info">
+            <div class="item-desc">{{item.desc}}</div>
+            Posted: {{item.date_time}}<br>
+            By: <a href="/user/{{item.user.username}}">{{item.user.username}}</a>
+          </div>
+        </div>
+      </li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}
+
+

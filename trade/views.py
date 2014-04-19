@@ -15,6 +15,8 @@ from django.http import HttpResponse, Http404
 
 from trade.models import *
 import re
+from django.core import serializers
+import json
 
 
 @login_required
@@ -23,15 +25,15 @@ def manage(request):
   items = Item.objects.filter(user=request.user).order_by('-date_time')
   return render(request, 'trade/index.html', {'items' : items})
 
-def view_blog(request, id):
+def profile(request, id):
   # Sets up list of just the logged-in user's (request.user's) items
-  blog_owner = User.objects.get(username = id)
-  items = Item.objects.filter(user=blog_owner).order_by('-date_time')
-  return render(request, 'trade/blog.html', 
+  user = User.objects.get(username = id)
+  items = Item.objects.filter(user=user).order_by('-date_time')
+  return render(request, 'trade/profile.html', 
     {'items' : items, 
-     'username' : blog_owner.username,
-     'first_name' : blog_owner.first_name,
-     'last_name' : blog_owner.last_name}
+     'username' : user.username,
+     'first_name' : user.first_name,
+     'last_name' : user.last_name}
     )
 
 @login_required
@@ -170,7 +172,8 @@ def register(request):
                                       first_name=request.POST['first_name'],
                                       last_name=request.POST['last_name'],
                                       email=request.POST['email'])
-  new_user.is_active=False
+  #new_user.is_active=False
+  new_user.is_active=True
   new_user.save()
   new_userWithFollowers = UserWithFollowers(user=new_user)
   new_userWithFollowers.save();
@@ -224,3 +227,83 @@ def update_users(request):
                 {'users':users, 
                  'followers':followers}, 
                 content_type='application/xml')
+
+@login_required
+def trade_single(request, id):
+  # Sets up list of just the logged-in user's (request.user's) items
+  trade = Trade.objects.get(id=id)
+  user1items = []
+  user2items = []
+  for item in trade.items.all():
+    if item.user == trade.user1:
+      user1items.append(item)
+    else:
+      user2items.append(item)
+  return render(request, 'trade/trade.html', 
+    {
+      'id': trade.id,
+      'user1': trade.user1,
+      'user2': trade.user2, 
+      'user1items': user1items,
+      'user2items': user2items,
+    })
+
+@login_required
+def trade_action(request):
+  if 'action' not in request.GET:
+    return redirect('/')
+
+  ac = request.GET['action']
+
+  if ac == 'start':
+    # create trade, redirect
+    user2 = User.objects.get(username=request.GET['with'])
+    newtrade = Trade(user1=request.user, user2=user2)
+    newtrade.save()
+    return redirect('/trade/' + str(newtrade.id));
+  elif ac == 'cancel':
+    try:
+      trade = Trade.objects.get(id=request.GET['id'])
+      trade.delete()
+    except ObjectDoesNotExist:
+      pass
+    return redirect('/') # show successful message
+  else:
+    return redirect('/')
+
+def search(request):
+  # to be improved
+  if 'q' not in request.GET:
+    return redirect('/')
+
+  results = Item.objects.filter(desc__icontains=request.GET['q'])
+  return render(request, 'trade/search.html', {'items': results, 'q': request.GET['q']})
+
+def item_single(request, id):
+  item = Item.objects.get(id=id)
+  questions = ItemQuestion.objects.filter(item=item)
+  return render(request, 'trade/item.html', {'item': item, 'questions': questions})
+
+def item_question(request, id):
+  if request.method == 'POST':
+    item = Item.objects.get(id=id)
+    q = ItemQuestion(user=request.user, item=item, q=request.POST['q'])
+    q.save()
+    return redirect('/item/' + str(id))
+  return redirect('/')
+
+def trade_message(request, id):
+  result = {}
+  trade = Trade.objects.get(id=id)
+  if request.method == 'GET':
+    msgs = TradeMsg.objects.filter(trade=trade).order_by('date')
+    result = list(msgs.values('user', 'body'))
+    for v in result:
+      user = User.objects.get(id=v['user'])
+      v['username'] = user.username
+  elif request.method == 'POST':
+    msg = TradeMsg(user=request.user, trade=trade, body=request.POST['body'])
+    msg.save()
+    return redirect('/trade/' + str(id))
+
+  return HttpResponse(json.dumps(result), content_type="application/json")

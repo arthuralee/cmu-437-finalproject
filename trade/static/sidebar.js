@@ -59,6 +59,3 @@ console.log(is_auth);
         }
     }
 }
-
-setInterval(sendRequest,10000);
-
