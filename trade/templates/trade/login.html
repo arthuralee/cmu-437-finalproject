@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %} microBlog -- Login {% endblock %}
+
+{% block errors %} 
+  {% if form.errors %}
+  <p class="alert alert-danger">
+    Error loggin in.  <br>
+    Incorrect username/password combination and/or unverified account.
+  </p>
+  {% endif %}
+{% endblock %}
+
+{% block header %} Welcome to microBlog {% endblock %}
+{% block subheader %} It's a microBlog. {% endblock %}
+
+{% block content %}
+<div class="blog">
+<form class="form-signin" method="post" action="{% url 'django.contrib.auth.views.login' %}">
+  <h2 class="form-signin-heading">Please sign in</h2>
+
+  <input type="text" class="form-control" id="id_username" name="username"
+   placeholder="Username" required autofocus>
+
+  <input type="password" class="form-control" id="id_password" name="password"
+   placeholder="Password" required>
+
+<button class="btn btn-lg btn-info btn-block" type="submit">Sign in</button>
+No account? <a href="/register">Register Now!</a>
+<input type="hidden" name="next" value="{{ next }}" />
+{% csrf_token %}
+</form>
+</div>
+{% endblock %}
+

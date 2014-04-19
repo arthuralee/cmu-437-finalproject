@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %} microBlog -- Verify {% endblock %}
+
+{% block errors %} 
+{% for error in errors %}
+<p class="alert alert-danger">
+{{ error }}
+</p>
+{% endfor %}
+{% endblock %}
+
+{% block header %} microBlog Verification {% endblock %}
+{% block subheader %} This is the verification page. {% endblock %}
+
+{% block content %}
+<div class="blog">
+{% for c in content %}
+    <p> {{c}} </p>
+{% endfor %}
+
+<a href="/">Go To Login</a>
+{% csrf_token %}
+</div>
+{% endblock %}
+

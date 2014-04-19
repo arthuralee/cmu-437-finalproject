@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %} Profile {% endblock %}
+
+
+{% block errors %}
+  {% for error in errors %}
+    <p class="alert alert-danger">
+    {{error}}
+    </p>
+  {% endfor %}
+{% endblock %}
+
+{% block header %}{{username}}{% endblock %}
+{% block subheader %}User Profile{% endblock %}
+
+{% block content %}
+<div class="profile">
+  Full name: {{first_name}} {{last_name}} <br>
+  Reputation: 5 stars <br>
+  <a href="/trade?action=start&with={{username}}">Start trade with <strong>{{username}}</strong></a>
+</div>
+
+<div class="blog">
+  <ul class="item-list">
+    {% for item in items %}
+      <li class="panel panel-default">
+        <div class="panel-body">
+          {% if item.image %}
+            <img src="{% url 'image' item.id %}">
+          {% endif %}
+          <div class="item-info">
+            <div class="item-desc">{{item.desc}}</div>
+            Posted: {{item.date_time}}
+          </div>
+        </div>
+      </li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}
+
+
