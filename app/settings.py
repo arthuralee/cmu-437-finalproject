@@ -100,9 +100,10 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.media",
     "django.core.context_processors.static",
     "django.core.context_processors.tz",
+    "django.core.context_processors.request",
     "django.contrib.messages.context_processors.messages",
     "trade.context_processors.get_users",
-    "trade.context_processors.get_trades"
+    "trade.context_processors.get_trades",
 )
 
 ROOT_URLCONF = 'app.urls'

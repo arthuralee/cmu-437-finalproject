@@ -55,16 +55,16 @@
 
 
 
-        <li class="active"><a href="#">Home</a></li>
+        <li{%if request.path == '/'%} class="active"{%endif%}><a href="/">Home</a></li>
         {% if user.is_authenticated %}
-          <li><a href="/user/{{user.username}}">Profile</a></li>
-          <li><a href="/manage">My catalog</a></li>
+          <li{%if request.path == '/user/'|add:user.username%} class="active"{%endif%}><a href="/user/{{user.username}}">Profile</a></li>
+          <li{%if request.path == '/manage'%} class="active"{%endif%}><a href="/manage">My catalog</a></li>
           <li><a href="#">My trades</a></li>
           <li><a href="/logout">Logout</a></li>
 
-          Active Trades:
+          Active Trades:<br>
           {% for trade in trades %}
-            <li><a href="/trade/{{trade.id}}">Trade {{trade.id}} {{trade.user1}}-&gt;{{trade.user2}}</a></li>
+            <li><a href="/trade/{{trade.id}}">{{trade.user1}} &amp; {{trade.user2}}</a></li>
           {% endfor %}
         {% else %}
           <li><a href="/">Sign In/Register</a></li>

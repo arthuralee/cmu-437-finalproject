@@ -2,9 +2,12 @@
   height: 82px;
 }
 #logo h2 {
-  background-color: #eee;
+  text-transform: uppercase;
+  background-color: #EEE;
   margin: 0;
   padding: 32px 15px 16px;
+  height: 90px;
+  border-bottom: 1px solid #CCC;
 }
 
 #search {
@@ -12,6 +15,7 @@
 }
 #search input {
   width: 85%;
+  height: 50px;
 }
 #search .form-control {
   vertical-align: middle;
@@ -19,6 +23,7 @@
 }
 #search button {
   width: 14%;
+  height: 50px;
 }
 
 
