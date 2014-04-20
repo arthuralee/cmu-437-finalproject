@@ -23,7 +23,7 @@ import json
 def manage(request):
   # Sets up list of just the logged-in user's (request.user's) items
   items = Item.objects.filter(user=request.user).order_by('-date_time')
-  return render(request, 'trade/index.html', {'items' : items})
+  return render(request, 'trade/manage.html', {'items' : items})
 
 def profile(request, id):
   # Sets up list of just the logged-in user's (request.user's) items
