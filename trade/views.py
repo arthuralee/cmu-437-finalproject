@@ -232,20 +232,31 @@ def update_users(request):
 def trade_single(request, id):
   # Sets up list of just the logged-in user's (request.user's) items
   trade = Trade.objects.get(id=id)
-  user1items = []
-  user2items = []
-  for item in trade.items.all():
-    if item.user == trade.user1:
-      user1items.append(item)
+  user1selectitems = []
+  user1restitems = []
+  user2selectitems = []
+  user2restitems = []
+  items1 = Item.objects.filter(user=trade.user1).order_by('-date_time')
+  items2 = Item.objects.filter(user=trade.user2).order_by('-date_time')
+  for item in items1:
+    if item in trade.items.all():
+      user1selectitems.append(item)
     else:
-      user2items.append(item)
-  return render(request, 'trade/trade.html', 
+      user1restitems.append(item)
+  for item in items2:
+    if item in trade.items.all():
+      user2selectitems.append(item)
+    else:
+      user2restitems.append(item)
+  return render(request, 'trade/trade_modify.html', 
     {
       'id': trade.id,
       'user1': trade.user1,
       'user2': trade.user2, 
-      'user1items': user1items,
-      'user2items': user2items,
+      'user1selectitems': user1selectitems,
+      'user2selectitems': user2selectitems,
+      'user1restitems': user1restitems,
+      'user2restitems': user2restitems,
     })
 
 @login_required
@@ -270,6 +281,23 @@ def trade_action(request):
     return redirect('/') # show successful message
   else:
     return redirect('/')
+
+@login_required
+def trade_modify(request, id):
+  trade = Trade.objects.get(id=id)
+  def getItem(item_id): return Item.objects.get(id=item_id)
+  if 'user1selectitems' in request.POST:
+    user1selectitems = map(getItem, list(request.POST.getlist('user1selectitems')))
+  else:
+    user1selectitems = []
+  if 'user2selectitems' in request.POST:
+    user2selectitems = map(getItem, list(request.POST.getlist('user2selectitems')))
+  else:
+    user2selectitems = []
+  trade.items = user1selectitems + user2selectitems
+  return redirect('/trade/' + str(id))
+
+   
 
 def search(request):
   # to be improved
