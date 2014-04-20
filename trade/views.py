@@ -287,11 +287,11 @@ def trade_modify(request, id):
   trade = Trade.objects.get(id=id)
   def getItem(item_id): return Item.objects.get(id=item_id)
   if 'user1selectitems' in request.POST:
-    user1selectitems = map(getItem, list(request.POST.getlist('user1selectitems')))
+    user1selectitems = map(getItem, request.POST.getlist('user1selectitems'))
   else:
     user1selectitems = []
   if 'user2selectitems' in request.POST:
-    user2selectitems = map(getItem, list(request.POST.getlist('user2selectitems')))
+    user2selectitems = map(getItem, request.POST.getlist('user2selectitems'))
   else:
     user2selectitems = []
   trade.items = user1selectitems + user2selectitems
