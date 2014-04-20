@@ -1,13 +1,35 @@
+#logo {
+  height: 82px;
+}
+#logo h2 {
+  background-color: #eee;
+  margin: 0;
+  padding: 32px 15px 16px;
+}
+
+#search {
+  margin-top: 40px;
+}
+#search input {
+  width: 85%;
+}
+#search .form-control {
+  vertical-align: middle;
+  display: inline;
+}
+#search button {
+  width: 14%;
+}
+
+
+
+
+
+/* ==== Old styles ====== */
 .page-header{
   text-align: center;
 }
 
-.container{
-  width: 100%;
-  margin-left: auto;
-  margin-right: auto;
-  margin-bottom: 100px;
-}
 
 .blog {
   width: 100%;
