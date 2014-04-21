@@ -11,9 +11,11 @@ class Item(models.Model):
   def __unicode__(self):
 	 return self.desc
 
-class UserWithFollowers(models.Model):
-  user = models.CharField(max_length=200)
-  followers = models.ManyToManyField(User)
+class UserData(models.Model):
+  user = models.OneToOneField(User)
+  bio = models.CharField(max_length=1000)
+  rep = models.IntegerField(default=0)
+  image = models.ImageField(upload_to="users", blank=True)
 
 class Trade(models.Model):
   user1 = models.ForeignKey(User, related_name='user1')

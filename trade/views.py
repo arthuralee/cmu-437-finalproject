@@ -87,14 +87,8 @@ def follow_user(request, id):
   return redirect('/trade')
 
 @login_required
-def feed(request):
-  follower = UserWithFollowers.objects.get(user=request.user.username)
-  all_items = []
-  for bloguser in follower.followers.all():
-    for post in Item.objects.filter(user=bloguser):
-      all_items.append(post)
-  all_items = sorted(all_items, key=lambda post: post.date_time, reverse=True)
-  context = {'all_items' : all_items}
+def home(request):
+  context = {}
   return render(request, 'trade/home.html', context)
 
 def register(request):
@@ -215,18 +209,6 @@ def verify(request):
     content.append("Hey " + user.first_name + " " + user.last_name + ".")  
     content.append("Your account " + user.username + " has been verified!")
     return render(request, 'trade/verify.html', context)
-
-def update_users(request):
-  users =  list(User.objects.all().order_by('username'))
-  if not request.user.is_authenticated(): 
-    followers = []
-  else:
-    userwf = UserWithFollowers.objects.get(user=request.user.username)
-    followers = userwf.followers.all()
-  return render(request, 'trade/users.xml', 
-                {'users':users, 
-                 'followers':followers}, 
-                content_type='application/xml')
 
 @login_required
 def trade_single(request, id):

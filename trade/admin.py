@@ -4,7 +4,7 @@ from django.contrib.auth.admin import UserAdmin
 from trade.models import *
 
 admin.site.register(Item)
-admin.site.register(UserWithFollowers)
+admin.site.register(UserData)
 admin.site.register(Trade)
 admin.site.register(TradeMsg)
 admin.site.register(ItemQuestion)

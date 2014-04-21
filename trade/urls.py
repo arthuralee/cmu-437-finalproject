@@ -1,7 +1,7 @@
 from django.conf.urls import patterns, include, url
 
 urlpatterns = patterns('',
-    url(r'^$', 'trade.views.feed'),
+    url(r'^$', 'trade.views.home'),
     url(r'^user/(?P<id>.+)$', 'trade.views.profile'),
     url(r'^follow/(?P<id>.+)$', 'trade.views.follow_user'),
     url(r'^add-item', 'trade.views.add_item'),
@@ -20,5 +20,4 @@ urlpatterns = patterns('',
     url(r'^register$', 'trade.views.register'),
     url(r'^verify$', 'trade.views.verify'),
     url(r'^manage$', 'trade.views.manage'),
-    url(r'^update$', 'trade.views.update_users'),
 )
