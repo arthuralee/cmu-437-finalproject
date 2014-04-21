@@ -249,16 +249,18 @@ def trade_action(request):
     user = request.user
     trades = Trade.objects.filter(Q(user1=request.user) | Q(user2=request.user))
     active = []
-    nonactive =[]
+    cancelled = []
+    completed = []
     for trade in trades:
-      if trade.status:
-        # nonactive
-        nonactive.append(trade)
-      else:
+      if trade.status == 0:
         active.append(trade)
+      elif trade.status == 1:
+        cancelled.append(trade)
+      elif trade.status == 2:
+        completed.append(trade)
     return render(request, 'trade/my_trades.html', {'active_trades': active,
-                                                    'nonactive_trades': nonactive,
-                                                    'cur_user' : user})
+                                                    'cancelled_trades': cancelled,
+                                                    'completed_trades': completed})
   else:
     ac = request.GET['action']
 

@@ -11,43 +11,70 @@
   {% endfor %}
 {% endblock %}
 
-{% block header %}My Trades{% endblock %}
-{% block subheader %}{% endblock %}
-
 {% block content %}
+  <h1>My trades</h1>
 
-Currently trading with....
-<ul>
-{% for trade in active_trades %}
-  <li> 
-  {% if trade.user1.id == cur_user.id %}
-     <a href="/user/{{trade.user1.username}}">{{trade.user2.username}}</a>
-  {% else  %}
-    <a href="/user/{{cur_user.username}}">{{cur_user.username}}</a>.
-  {% endif %}
-  <a href="/trade/{{trade.id}}" color_name="pink">View Trade</a>
-  {% empty %}
-Nobody :(
-{% endfor %}
+  <div class="panel panel-primary">
+    <div class="panel-heading">
+      <h3 class="panel-title">Current trades</h3>
+    </div>
+    <div class="panel-body">
+      <ul>
+        {% for trade in active_trades %}
+          <li>
+          {% if trade.user1.id == user.id %}
+             <a href="/user/{{trade.user1.username}}">{{trade.user2.username}}</a>
+          {% else  %}
+            <a href="/user/{{user.username}}">{{user.username}}</a>.
+          {% endif %}
+          <a href="/trade/{{trade.id}}" color_name="pink">View Trade</a>
+        {% empty %}
+          Nobody :(
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
 
-</ul>
+  <div class="panel panel-success">
+    <div class="panel-heading">
+      <h3 class="panel-title">Completed trades</h3>
+    </div>
+    <div class="panel-body">
+      <ul>
+        {% for trade in nonactive_trades %}
+          <li> 
+          {% if trade.user1.id == user.id %}
+             <a href="/user/{{trade.user1.username}}">{{trade.user2.username}}</a>
+          {% else  %}
+            <a href="/user/{{user.username}}">{{user.username}}</a>.
+          {% endif %}
+          <a href="/trade/{{trade.id}}" color_name="pink">View Trade</a>
+        {% empty %}
+          Nobody :(
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
 
-Done trading with...
-<ul>
-{% for trade in nonactive_trades %}
-  <li>  
-  {% if trade.user1.id != cur_id %}
-     <a href="/user/{{item.user.username}}">{{trade.user1.username}}</a>
-  {% else  %}
-    <a href="/user/{{item.user.username}}">{{trade.user1.username}}</a>.
-  <a href="/trade/{{trade.id}}">View Trade</a>
-  {% endif %}
-  {% empty %}
-No one :(
-{% endfor %}
-</ul>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title">Cancelled trades</h3>
+    </div>
+    <div class="panel-body">
+      <ul>
+        {% for trade in nonactive_trades %}
+          <li> 
+          {% if trade.user1.id == user.id %}
+             <a href="/user/{{trade.user1.username}}">{{trade.user2.username}}</a>
+          {% else  %}
+            <a href="/user/{{user.username}}">{{user.username}}</a>.
+          {% endif %}
+          <a href="/trade/{{trade.id}}" color_name="pink">View Trade</a>
+        {% empty %}
+          Nobody :(
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
 
 {% endblock %}
-
-
-
