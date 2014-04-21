@@ -16,6 +16,7 @@ from django.http import HttpResponse, Http404
 from trade.models import *
 import re
 from django.core import serializers
+from django.db.models import Q
 import json
 
 
@@ -280,7 +281,21 @@ def trade_modify(request, id):
   trade.items = user1selectitems + user2selectitems
   return redirect('/trade/' + str(id))
 
-   
+@login_required
+def my_trades(request):
+  user = request.user
+  trades = Trade.objects.filter(Q(user1=request.user) | Q(user2=request.user))
+  active = []
+  nonactive =[]
+  for trade in trades:
+    if trade.status:
+      # nonactive
+      nonactive.append(trade)
+    else:
+      active.append(trade)
+  return render(request, 'trade/my_trades.html', {'active_trades': active,
+                                                  'nonactive_trades': nonactive,
+                                                  'cur_user' : user})
 
 def search(request):
   # to be improved
