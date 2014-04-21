@@ -16,9 +16,14 @@ def get_users(request):
     users.append(user)
   return {'users' : sorted(users, key=lambda u: u.username)}
 
-def get_trades(request):
-  if request.user.is_authenticated():
-    trades = Trade.objects.filter(Q(user1=request.user) | Q(user2=request.user))
-    return {'trades': trades}
-  else:
-    return {'trades': []}
+def nav(request):
+  nav = {}
+  if request.path == "/":
+    nav['home'] = True
+  elif request.user.username in request.path:
+    nav['profile'] = True
+  elif 'manage' in request.path:
+    nav['catalog'] = True
+  elif 'trade' in request.path:
+    nav['trade'] = True
+  return {'nav': nav}

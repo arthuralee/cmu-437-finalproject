@@ -103,6 +103,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.request",
     "django.contrib.messages.context_processors.messages",
     "trade.context_processors.get_users",
+    "trade.context_processors.nav",
 )
 
 ROOT_URLCONF = 'app.urls'
