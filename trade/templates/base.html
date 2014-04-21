@@ -59,7 +59,7 @@
         {% if user.is_authenticated %}
           <li{%if request.path == '/user/'|add:user.username%} class="active"{%endif%}><a href="/user/{{user.username}}">Profile</a></li>
           <li{%if request.path == '/manage'%} class="active"{%endif%}><a href="/manage">My catalog</a></li>
-          <li><a href="#">My trades</a></li>
+          <li{%if request.path == '/mytrades'%} class="active"{%endif%}><a href="/mytrades">My trades</a></li>
           <li><a href="/logout">Logout</a></li>
 
           Active Trades:<br>
