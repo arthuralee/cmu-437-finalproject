@@ -11,14 +11,18 @@
   {% endfor %}
 {% endblock %}
 
-{% block header %}{{username}}{% endblock %}
-{% block subheader %}User Profile{% endblock %}
-
 {% block content %}
 <div class="profile">
-  Full name: {{first_name}} {{last_name}} <br>
-  Reputation: 5 stars <br>
-  <a href="/trade?action=start&with={{username}}">Start trade with <strong>{{username}}</strong></a>
+  <h1>{{username}}</h1>
+
+  {{first_name}} {{last_name}} <br>
+  Reputation: 5 <br>
+
+  {% if user.id == userid %}
+    <a href="#">Edit profile</a>
+  {% else %}
+    <a href="/trade?action=start&with={{username}}">Start trade with <strong>{{username}}</strong></a>
+  {% endif %}
 </div>
 
 <div class="blog">

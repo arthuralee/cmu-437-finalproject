@@ -30,7 +30,8 @@ def profile(request, id):
   user = User.objects.get(username = id)
   items = Item.objects.filter(user=user).order_by('-date_time')
   return render(request, 'trade/profile.html', 
-    {'items' : items, 
+    {'items' : items,
+     'userid': user.id,
      'username' : user.username,
      'first_name' : user.first_name,
      'last_name' : user.last_name}

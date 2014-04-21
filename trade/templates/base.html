@@ -11,113 +11,60 @@
 
 <body>
   <div class="container">
-<!-- 
-  <div class="row">
-    <div class="col-md-12">
-      <div class="navbar navbar-default">
-        <div class="navbar-collapse collapse navbar-responsive-collapse">
-          <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Active</a></li>
-            <li><a href="#">Link</a></li>
-          </ul>
-          <ul class="nav navbar-nav navbar-right">
-            <li><a href="#">Link</a></li>
-          </ul>
-        </div>
+
+    <div class="row">
+      <div class="col-md-3" id="logo">
+        <h2><a href="/">Trading Post</a></h2>
+      </div>
+      <div class="col-md-9" id="search">
+        <form class="form" role="form" method="get" action="/search">
+          <div class="form-group">
+            <input type="search" class="form-control" name="q" placeholder="Search for an item..." value="{{q}}">
+            <button type="submit" class="btn btn-primary">Search</button>
+          </div>
+        </form>
       </div>
     </div>
-  </div>
- -->
-  <div class="row">
-    <div class="col-md-3" id="logo">
-      <h2>Trading Post</h2>
-    </div>
-    <div class="col-md-9" id="search">
-      <form class="form" role="form" method="get" action="/search">
-        <div class="form-group">
-          <input type="search" class="form-control" name="q" placeholder="Search for an item..." value="{{q}}">
-          <button type="submit" class="btn btn-primary">Search</button>
-        </div>
-      </form>
-    </div>
-  </div>
 
-  <div class="row">
-    <div id="sidebar" class="col-md-3">
-      {% block sidebar %}{% endblock %}
+    <div class="row">
+      <div id="sidebar" class="col-md-3">
+        {% block sidebar %}{% endblock %}
 
-      <ul class="nav nav-pills nav-stacked">
-        {% if user.is_authenticated %}
-        <li>
-          <a><img src="https://scontent-a-lga.xx.fbcdn.net/hphotos-ash2/t1.0-9/398511_10150463491055810_1684691940_n.jpg" width="40" height="40" /> {{user.username}} (30)</a>
-        </li>
-        {% endif %}
+        <ul class="nav nav-pills nav-stacked">
+          {% if user.is_authenticated %}
+          <li>
+            <a><img src="https://scontent-a-lga.xx.fbcdn.net/hphotos-ash2/t1.0-9/398511_10150463491055810_1684691940_n.jpg" width="40" height="40" /> {{user.username}} (30)</a>
+          </li>
+          {% endif %}
 
+          <li{%if request.path == '/'%} class="active"{%endif%}><a href="/">Home</a></li>
+          {% if user.is_authenticated %}
+            <li{%if request.path == '/user/'|add:user.username%} class="active"{%endif%}><a href="/user/{{user.username}}">Profile</a></li>
+            <li{%if request.path == '/manage'%} class="active"{%endif%}><a href="/manage">My catalog</a></li>
+            <li><a href="#">My trades</a></li>
+            <li><a href="/logout">Logout</a></li>
 
+            Active Trades:<br>
+            {% for trade in trades %}
+              <li><a href="/trade/{{trade.id}}">{{trade.user1}} &amp; {{trade.user2}}</a></li>
+            {% endfor %}
+          {% else %}
+            <li><a href="/">Sign In/Register</a></li>
+          {% endif %}
+        </ul>
 
-        <li{%if request.path == '/'%} class="active"{%endif%}><a href="/">Home</a></li>
-        {% if user.is_authenticated %}
-          <li{%if request.path == '/user/'|add:user.username%} class="active"{%endif%}><a href="/user/{{user.username}}">Profile</a></li>
-          <li{%if request.path == '/manage'%} class="active"{%endif%}><a href="/manage">My catalog</a></li>
-          <li><a href="#">My trades</a></li>
-          <li><a href="/logout">Logout</a></li>
-
-          Active Trades:<br>
-          {% for trade in trades %}
-            <li><a href="/trade/{{trade.id}}">{{trade.user1}} &amp; {{trade.user2}}</a></li>
-          {% endfor %}
-        {% else %}
-          <li><a href="/">Sign In/Register</a></li>
-        {% endif %}
-      </ul>
-
-      <!--
-
-      {% if not user.is_authenticated %}
-        <p> View Blogs </p>
-        <div class="btn-group-vertical" id="following">
-          {% for user in users %} 
-            <a href="/user/{{user}}" class="btn btn-default btn-block">
-              {{user}}
-            </a>
-          {% endfor %}
-        </div>
-      {% else %}
-        <p> Follow/Unfollow Blogs </p>
-
-        <div class="btn-group-vertical" id="following">
-          {% for user in users %} 
-            <a href="/follow/{{user}}" class="btn {{user.btn_style}} btn-block">
-              {{user}}
-            </a>
-          {% endfor %}
-        </div>
-      {% endif %}
-    -->
-    </div>
-
-    <div class="col-md-9">
-
-      <div id="title">
-        <div class = "page-header">
-          <h1 id="moo"> {% block header %} {% endblock %}
-            <small>{% block subheader %} {% endblock %}</small>
-          </h1>
-        </div>
       </div>
 
-      {% block errors %}
-      {% endblock %}
-      <div id="content">
-        {% block content %}
+      <div class="col-md-9">
+        {% block errors %}
         {% endblock %}
+        <div id="content">
+          {% block content %}
+          {% endblock %}
+        </div>
       </div>
-
     </div>
   </div>
-
-</div>
-
 </body>
 
 </html>

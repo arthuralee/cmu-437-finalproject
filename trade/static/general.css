@@ -1,5 +1,6 @@
 #logo {
   height: 82px;
+  text-align: center;
 }
 #logo h2 {
   text-transform: uppercase;
@@ -8,6 +9,10 @@
   padding: 32px 15px 16px;
   height: 90px;
   border-bottom: 1px solid #CCC;
+}
+#logo h2 a {
+  text-decoration: none;
+  color: #333;
 }
 
 #search {
