@@ -8,11 +8,12 @@ urlpatterns = patterns('',
     url(r'^delete-item/(?P<id>\d+)$', 'trade.views.delete_post'),
     url(r'^item/(?P<id>.+)/question$', 'trade.views.item_question'),
     url(r'^item/(?P<id>.+)$', 'trade.views.item_single'),
+
     url(r'^trade/(?P<id>.+)/message$', 'trade.views.trade_message'),
     url(r'^trade/(?P<id>.+)/modify$', 'trade.views.trade_modify'),
     url(r'^trade/(?P<id>.+)$', 'trade.views.trade_single'),
     url(r'^trade', 'trade.views.trade_action'),
-    url(r'^mytrades', 'trade.views.my_trades'),
+
     url(r'^search', 'trade.views.search'),
     # Route for built-in authentication with our own custom login page
     url(r'^login$', 'django.contrib.auth.views.login', {'template_name':'trade/login.html'}),

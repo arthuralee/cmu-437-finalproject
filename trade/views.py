@@ -246,25 +246,37 @@ def trade_single(request, id):
 @login_required
 def trade_action(request):
   if 'action' not in request.GET:
-    return redirect('/')
-
-  ac = request.GET['action']
-
-  if ac == 'start':
-    # create trade, redirect
-    user2 = User.objects.get(username=request.GET['with'])
-    newtrade = Trade(user1=request.user, user2=user2)
-    newtrade.save()
-    return redirect('/trade/' + str(newtrade.id));
-  elif ac == 'cancel':
-    try:
-      trade = Trade.objects.get(id=request.GET['id'])
-      trade.delete()
-    except ObjectDoesNotExist:
-      pass
-    return redirect('/') # show successful message
+    user = request.user
+    trades = Trade.objects.filter(Q(user1=request.user) | Q(user2=request.user))
+    active = []
+    nonactive =[]
+    for trade in trades:
+      if trade.status:
+        # nonactive
+        nonactive.append(trade)
+      else:
+        active.append(trade)
+    return render(request, 'trade/my_trades.html', {'active_trades': active,
+                                                    'nonactive_trades': nonactive,
+                                                    'cur_user' : user})
   else:
-    return redirect('/')
+    ac = request.GET['action']
+
+    if ac == 'start':
+      # create trade, redirect
+      user2 = User.objects.get(username=request.GET['with'])
+      newtrade = Trade(user1=request.user, user2=user2)
+      newtrade.save()
+      return redirect('/trade/' + str(newtrade.id));
+    elif ac == 'cancel':
+      try:
+        trade = Trade.objects.get(id=request.GET['id'])
+        trade.delete()
+      except ObjectDoesNotExist:
+        pass
+      return redirect('/') # show successful message
+    else:
+      return redirect('/')
 
 @login_required
 def trade_modify(request, id):
@@ -280,22 +292,6 @@ def trade_modify(request, id):
     user2selectitems = []
   trade.items = user1selectitems + user2selectitems
   return redirect('/trade/' + str(id))
-
-@login_required
-def my_trades(request):
-  user = request.user
-  trades = Trade.objects.filter(Q(user1=request.user) | Q(user2=request.user))
-  active = []
-  nonactive =[]
-  for trade in trades:
-    if trade.status:
-      # nonactive
-      nonactive.append(trade)
-    else:
-      active.append(trade)
-  return render(request, 'trade/my_trades.html', {'active_trades': active,
-                                                  'nonactive_trades': nonactive,
-                                                  'cur_user' : user})
 
 def search(request):
   # to be improved
