@@ -12,36 +12,45 @@
 {% endblock %}
 
 {% block content %}
-<div class="profile">
-  <h1>{{username}}</h1>
 
-  {{first_name}} {{last_name}} <br>
-  Reputation: 5 <br>
-
-  {% if user.id == userid %}
-    <a href="#">Edit profile</a>
-  {% else %}
-    <a href="/trade?action=start&with={{username}}">Start trade with <strong>{{username}}</strong></a>
-  {% endif %}
+<div class="page-header">
+  <h1>{{username}} <small>({{first_name}} {{last_name}})</small></h1>
+</div>
+<div class="row">
+  <div class="col-md-6">
+    <h3>info</h3>
+    <ul class="list-unstyled">
+      <li><strong>Reputation</strong>: 30</li>
+      <li><strong>Location</strong>: Pittsburgh, PA</li>
+    </ul>
+  </div>
+  <div class="col-md-6">
+    <h3>actions</h3>
+    {% if user.id == userid %}
+      <a class="btn btn-primary" href="#">edit profile</a>
+    {% else %}
+      <a class="btn btn-primary" href="/trade?action=start&with={{username}}">start trade with <strong>{{username}}</strong></a>
+    {% endif %}
+    <a class="btn btn-default" href="#">see reviews</a>
+  </div>
 </div>
 
-<div class="blog">
-  <ul class="item-list">
-    {% for item in items %}
-      <li class="panel panel-default">
-        <div class="panel-body">
-          {% if item.image %}
-            <img src="{% url 'image' item.id %}">
-          {% endif %}
-          <div class="item-info">
-            <div class="item-desc">{{item.desc}}</div>
-            Posted: {{item.date_time}}
-          </div>
+<h3>catalog</h3>
+<ul class="item-list">
+  {% for item in items %}
+    <li class="panel panel-default">
+      <div class="panel-body">
+        {% if item.image %}
+          <img src="{% url 'image' item.id %}">
+        {% endif %}
+        <div class="item-info">
+          <div class="item-desc">{{item.desc}}</div>
+          Posted: {{item.date_time}}
         </div>
-      </li>
-    {% endfor %}
-  </ul>
-</div>
+      </div>
+    </li>
+  {% endfor %}
+</ul>
 {% endblock %}
 
 

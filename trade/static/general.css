@@ -36,17 +36,6 @@
 
 
 /* ==== Old styles ====== */
-.page-header{
-  text-align: center;
-}
-
-
-.blog {
-  width: 100%;
-  margin-left: auto;
-  margin-right: auto;
-}
-
 .item-list {
   list-style-type: none;
   margin: 0;
@@ -58,9 +47,10 @@
   clear: both;
 }
   .item-list li {
-    margin: 5px;
+    margin-left: 2px;
+    margin-right: 2px;
     padding: 0;
-    width: 220px;
+    width: 207px;
     height: 280px;
     float: left;
     position: relative;

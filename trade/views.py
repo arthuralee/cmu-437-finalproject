@@ -50,10 +50,7 @@ def add_item(request):
     if 'image' in request.FILES:
       new_item.image = request.FILES['image']
     new_item.save()
-
-  items = Item.objects.filter(user=request.user).order_by('-date_time')
-  context = {'items' : items, 'errors' : errors}
-  return render(request, 'trade/index.html', context)
+  return redirect('/manage')
 
 def get_image(request, id):
   item = get_object_or_404(Item, id=id)
@@ -63,7 +60,7 @@ def get_image(request, id):
   return HttpResponse(item.image, mimetype=content_type)
 
 @login_required
-def delete_post(request, id):
+def delete_item(request, id):
   errors = []
 
   # Deletes post if the logged-in user has an post matching the id
@@ -73,9 +70,7 @@ def delete_post(request, id):
   except ObjectDoesNotExist:
     errors.append('The post did not exist in your todo list.')
 
-  items = Item.objects.filter(user=request.user).order_by('-date_time')
-  context = {'items' : items, 'errors' : errors}
-  return render(request, 'trade/index.html', context)
+  return redirect('/manage')
 
 @login_required
 def follow_user(request, id):

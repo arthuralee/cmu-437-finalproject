@@ -39,11 +39,11 @@
 
 
 
-          <li{%if request.path == '/'%} class="active"{%endif%}><a href="/">Home</a></li>
+          <li{%if nav.home%} class="active"{%endif%}><a href="/">Home</a></li>
           {% if user.is_authenticated %}
-            <li{%if request.path == '/user/'|add:user.username%} class="active"{%endif%}><a href="/user/{{user.username}}">Profile</a></li>
-            <li{%if request.path == '/manage'%} class="active"{%endif%}><a href="/manage">My catalog</a></li>
-            <li{%if request.path == '/trade'%} class="active"{%endif%}><a href="/trade">My trades</a></li>
+            <li{%if nav.profile%} class="active"{%endif%}><a href="/user/{{user.username}}">Profile</a></li>
+            <li{%if nav.catalog%} class="active"{%endif%}><a href="/manage">My catalog</a></li>
+            <li{%if nav.trade%} class="active"{%endif%}><a href="/trade">Trades</a></li>
             <li><a href="/logout">Logout</a></li>
           {% endif %}
         </ul>
