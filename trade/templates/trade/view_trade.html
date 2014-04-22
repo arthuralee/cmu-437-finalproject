@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Trade{% endblock %}
+
+
+{% block errors %}
+  {% for error in errors %}
+    <p class="alert alert-danger">
+    {{error}}
+    </p>
+  {% endfor %}
+{% endblock %}
+
+{% block header %}Trade{% endblock %}
+{% block subheader %}{% endblock %}
+
+{% block content %}
+<div class="profile">
+  Trade involving {{user1.username}} and {{user2.username}} <br>
+   <br>
+</div>
+
+<div class="blog">
+  <h3>{{user1.username}}'s items</h3>
+  <ul class="item-list">
+    <!-- these items are selected -->
+    {% for item in user1selectitems %}
+      <li class="panel panel-default">
+        <div class="panel-body">
+          {% if item.image %}
+            <img src="{% url 'image' item.id %}">
+          {% endif %}
+          <div class="item-info">
+            <div class="item-desc"><a href="/item/{{item.id}}">{{item.desc}}</a></div>
+            Posted: {{item.date_time}}
+          </div>
+        </div>
+      </li>
+    {% endfor %}
+  </ul>
+
+
+
+  <h3>{{user2.username}}'s items</h3>
+  <ul class="item-list">
+    {% for item in user2selectitems %}
+      <li class="panel panel-default">
+        <div class="panel-body">
+          {% if item.image %}
+            <img src="{% url 'image' item.id %}">
+          {% endif %}
+          <div class="item-info">
+            <div class="item-desc"><a href="/item/{{item.id}}">{{item.desc}}</a></div>
+            Posted: {{item.date_time}}
+          </div>
+        </div>
+      </li>
+    {% endfor %}
+
+  </ul>
+
+</div>
+
+{% endblock %}
+
+

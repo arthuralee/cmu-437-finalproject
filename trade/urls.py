@@ -8,7 +8,7 @@ urlpatterns = patterns('',
     url(r'^delete-item/(?P<id>\d+)$', 'trade.views.delete_post'),
     url(r'^item/(?P<id>.+)/question$', 'trade.views.item_question'),
     url(r'^item/(?P<id>.+)$', 'trade.views.item_single'),
-
+    url(r'^trade/view/(?P<id>.+)$', 'trade.views.trade_view'),
     url(r'^trade/(?P<id>.+)/message$', 'trade.views.trade_message'),
     url(r'^trade/(?P<id>.+)/modify$', 'trade.views.trade_modify'),
     url(r'^trade/(?P<id>.+)$', 'trade.views.trade_single'),

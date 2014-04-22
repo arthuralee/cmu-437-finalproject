@@ -295,6 +295,25 @@ def trade_modify(request, id):
   trade.items = user1selectitems + user2selectitems
   return redirect('/trade/' + str(id))
 
+@login_required
+def trade_view(request, id):
+  trade = Trade.objects.get(id=id)
+  user1selectitems = []
+  user2selectitems = []
+  for item in trade.items.all():
+    if item.user.id == trade.user1.id:
+      user1selectitems.append(item)
+    else:
+      user2selectitems.append(item)
+  return render(request, 'trade/view_trade.html', 
+    {
+      'id': trade.id,
+      'user1': trade.user1,
+      'user2': trade.user2, 
+      'user1selectitems': user1selectitems,
+      'user2selectitems': user2selectitems,
+    })
+
 def search(request):
   # to be improved
   if 'q' not in request.GET:
