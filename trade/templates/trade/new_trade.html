@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+
+{% block title %}Trade{% endblock %}
+
+
+{% block errors %}
+  {% for error in errors %}
+    <p class="alert alert-danger">
+    {{error}}
+    </p>
+  {% endfor %}
+{% endblock %}
+
+{% block header %}Make New Trade{% endblock %}
+{% block subheader %}{% endblock %}
+
+{% block content %}
+<div class="profile">
+  New Trade involving {{user1.username}} and {{user2.username}} <br>
+  Check the items u want to trade <br>
+</div>
+
+<div class="blog">
+  <form role="form" method="post" action="/trade/confirm/{{id}}" id="tradeform">
+  <h3>{{user1.username}}'s items</h3>
+  <ul class="item-list">
+    <!-- these items are selected -->
+    {% for item in user1selectitems %}
+      <li class="panel panel-default">
+        <div class="panel-body">
+          {% if item.image %}
+            <img src="{% url 'image' item.id %}">
+          {% endif %}
+          <div class="item-info">
+            <div class="item-desc"><a href="/item/{{item.id}}">{{item.desc}}</a></div>
+            Posted: {{item.date_time}}
+          </div>
+        </div>
+      <input type="checkbox" checked name="user1selectitems" value="{{item.id}}">Toggle
+      </li>
+    {% endfor %}
+    <!-- These items arent selected -->
+    {% for item in user1restitems %}
+      <li class="panel panel-default">
+        <div class="panel-body">
+          {% if item.image %}
+            <img src="{% url 'image' item.id %}">
+          {% endif %}
+          <div class="item-info">
+            <div class="item-desc"><a href="/item/{{item.id}}">{{item.desc}}</a></div>
+            Posted: {{item.date_time}}
+          </div>
+        </div>
+      <input type="checkbox" name="user1selectitems" value="{{item.id}}">Toggle
+      </li>
+    {% endfor %}
+  </ul>
+
+
+
+  <h3>{{user2.username}}'s items</h3>
+  <ul class="item-list">
+    {% for item in user2selectitems %}
+      <li class="panel panel-default">
+        <div class="panel-body">
+          {% if item.image %}
+            <img src="{% url 'image' item.id %}">
+          {% endif %}
+          <div class="item-info">
+            <div class="item-desc"><a href="/item/{{item.id}}">{{item.desc}}</a></div>
+            Posted: {{item.date_time}}
+          </div>
+        </div>
+         <input type="checkbox" checked name="user2selectitems" value="{{item.id}}">Toggle
+      </li>
+    {% endfor %}
+
+    {% for item in user2restitems %}
+      <li class="panel panel-default">
+        <div class="panel-body">
+          {% if item.image %}
+            <img src="{% url 'image' item.id %}">
+          {% endif %}
+          <div class="item-info">
+            <div class="item-desc"><a href="/item/{{item.id}}">{{item.desc}}</a></div>
+            Posted: {{item.date_time}}
+          </div>
+        </div>
+         <input type="checkbox" name="user2selectitems" value="{{item.id}}">Toggle
+      </li>
+    {% endfor %}
+
+  </ul>
+
+<!--   <h3>Messages</h3>
+  <ul id="messages">
+  </ul>
+  <form class="form-inline" role="form" method="post" action="/trade/{{id}}/message" id="chatform">
+    <div class="form-group">
+      <input type="text" class="form-control" name="q" id="chattext" placeholder="Type a message" size="100" />
+      <button type="submit" class="btn btn-default" value="message">Send</button>
+      {% csrf_token %}
+    </div>
+  </form> <br> -->
+
+<a href="/trade?action=cancel&id={{id}}" class="btn btn-danger">Cancel trade</a> 
+<button type="submit" class="btn btn-info" value="trade">Submit Trade</button>
+      {% csrf_token %}
+</form>
+</div>
+
+<script>
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie != '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+csrftoken = getCookie('csrftoken');
+$.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+      xhr.setRequestHeader("X-CSRFToken", csrftoken);
+    }
+});
+
+function refreshMsg() {
+  $.get('/trade/1/message', function(data) {
+    $('#messages').html('');
+
+    for (var i=0; i<data.length; i++) {
+      $('#messages').append($('<li>').html(data[i].username + ': ' + data[i].body))
+    }
+  });
+}
+
+refreshMsg();
+window.setInterval(refreshMsg, 5000);
+
+$('#chatform').submit(function(e) {
+  e.preventDefault();
+  $.post('/trade/{{id}}/message', {body: $('#chattext').val()}, function() {
+    $('#chattext').val('');
+    refreshMsg();
+  });
+  
+});
+</script>
+{% endblock %}
+
+

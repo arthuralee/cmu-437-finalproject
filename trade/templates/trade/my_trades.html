@@ -41,7 +41,7 @@
     </div>
     <div class="panel-body">
       <ul>
-       {% for trade in active_trades %}
+       {% for trade in completed_trades %}
           <li>
           {% if trade.user1.id == user.id %}
              <a href="/user/{{trade.user2.username}}">{{trade.user2.username}}</a>
@@ -62,7 +62,7 @@
     </div>
     <div class="panel-body">
       <ul>
-        {% for trade in nonactive_trades %}
+        {% for trade in cancelled_trades %}
           <li> 
           {% if trade.user1.id == user.id %}
              <a href="/user/{{trade.user1.username}}">{{trade.user2.username}}</a>

@@ -15,6 +15,12 @@
 {% block subheader %}{% endblock %}
 
 {% block content %}
+
+{% if justmade %}
+<!-- trade just made -->
+You have successfully created your trade! Here it is:
+{% endif %}
+
 <div class="profile">
   Trade involving {{user1.username}} and {{user2.username}} <br>
    <br>
@@ -58,6 +64,11 @@
     {% endfor %}
 
   </ul>
+  <a href="/trade?action=cancel&id={{id}}" class="btn btn-danger">Cancel trade</a> 
+
+{% if not justmade %}
+  <a class="btn btn-primary" href="/trade/modify/{{id}}">Create new trade from current trade</a> 
+{% endif %}
 
 </div>
 
