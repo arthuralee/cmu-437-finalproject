@@ -23,9 +23,9 @@
         {% for trade in active_trades %}
           <li>
           {% if trade.user1.id == user.id %}
-             <a href="/user/{{trade.user1.username}}">{{trade.user2.username}}</a>
+             <a href="/user/{{trade.user2.username}}">{{trade.user2.username}}</a>
           {% else  %}
-            <a href="/user/{{user.username}}">{{user.username}}</a>.
+            <a href="/user/{{trade.user1.username}}">{{trade.user1.username}}</a>.
           {% endif %}
           <a href="/trade/view/{{trade.id}}">View Trade</a>
         {% empty %}
@@ -41,12 +41,12 @@
     </div>
     <div class="panel-body">
       <ul>
-        {% for trade in nonactive_trades %}
-          <li> 
+       {% for trade in active_trades %}
+          <li>
           {% if trade.user1.id == user.id %}
-             <a href="/user/{{trade.user1.username}}">{{trade.user2.username}}</a>
+             <a href="/user/{{trade.user2.username}}">{{trade.user2.username}}</a>
           {% else  %}
-            <a href="/user/{{user.username}}">{{user.username}}</a>.
+            <a href="/user/{{trade.user1.username}}">{{trade.user1.username}}</a>.
           {% endif %}
           <a href="/trade/view/{{trade.id}}">View Trade</a>
         {% empty %}
