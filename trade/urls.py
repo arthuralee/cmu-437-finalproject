@@ -5,7 +5,7 @@ urlpatterns = patterns('',
     url(r'^user/(?P<id>.+)$', 'trade.views.profile'),
     url(r'^follow/(?P<id>.+)$', 'trade.views.follow_user'),
     url(r'^add-item', 'trade.views.add_item'),
-    url(r'^delete-item/(?P<id>\d+)$', 'trade.views.delete_post'),
+    url(r'^delete-item/(?P<id>\d+)$', 'trade.views.delete_item'),
     url(r'^item/(?P<id>.+)/question$', 'trade.views.item_question'),
     url(r'^item/(?P<id>.+)$', 'trade.views.item_single'),
 

@@ -10,40 +10,60 @@
   {% endfor %}
 {% endblock %}
 
-{% block header %}Manage my catalog{% endblock %}
-
-{% block sidebar %}
-{% endblock %}
-
 {% block content %}
-<h1>My catalog</h1>
+<div class="pull-right">
+  <button class="btn btn-default" data-toggle="modal" data-target="#addModal">+</button>
+</div>
+<h1>my catalog</h1>
 
-<div class="blog">
-  <ul class="item-list">
-    {% for item in items %}
-      <li class="panel panel-default">
-        <div class="panel-body">
-          {% if item.image %}
-            <img src="{% url 'image' item.id %}">
-          {% endif %}
-          <div class="item-info">
-            <div class="item-desc">{{item.desc}}</div>
-            Posted: {{item.date_time}} (<a href="/delete-item/{{item.id}}">x</a>)
-          </div>
+<ul class="item-list">
+  {% for item in items %}
+    <li class="panel panel-default">
+      <div class="panel-body">
+        {% if item.image %}
+          <img src="{% url 'image' item.id %}">
+        {% endif %}
+        <div class="item-info">
+          <div class="item-desc">{{item.desc}}</div>
+          Posted: {{item.date_time}} (<a href="/delete-item/{{item.id}}">x</a>)
         </div>
-      </li>
-    {% endfor %}
-  </ul>
+      </div>
+    </li>
+  {% endfor %}
+</ul>
 
-  <form action="/add-item" method="post" enctype="multipart/form-data">
-     <label>Add item</label>
-    <input type="file" name="image" text="Attach image">
-    <textarea class="form-control" type="text" name="desc"
-     maxlength="160" placeholder="Description"></textarea>
-    <input type="submit" class="btn btn-info" text="Add">
-    {% csrf_token %}
-  </form>
 
-{% endblock %}
+<div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myModalLabel">Add item</h4>
+      </div>
+      <form action="/add-item" method="post" enctype="multipart/form-data">
+      <div class="modal-body">
+
+
+        <div class="form-group">
+          <label for="exampleInputEmail1">Description</label>
+          <textarea class="form-control" type="text" name="desc"
+         maxlength="160" placeholder=""></textarea>
+        </div>
+        <div class="form-group">
+          <label for="exampleInputFile">Image</label>
+          <input type="file" name="image" text="Attach image">
+          <p class="help-block">The file must be in png/jpg format and not exceed 10MB</p>
+        </div>
+
+        {% csrf_token %}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">cancel</button>
+        <button type="submit" class="btn btn-primary">add</button>
+      </div>
+      </form>
+    </div>
+  </div>
 </div>
 
+{% endblock %}

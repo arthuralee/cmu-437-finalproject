@@ -13,7 +13,7 @@ class Item(models.Model):
 
 class UserData(models.Model):
   user = models.OneToOneField(User)
-  bio = models.CharField(max_length=1000)
+  loc = models.CharField(max_length=255)
   rep = models.IntegerField(default=0)
   image = models.ImageField(upload_to="users", blank=True)
 
