@@ -48,7 +48,8 @@ def search(request):
   if 'q' not in request.GET:
     return redirect('/')
 
-  results = Item.objects.filter(desc__icontains=request.GET['q'])
+  results = Item.objects.filter(Q(desc__icontains=request.GET['q']) | Q(longdesc__icontains=request.GET['q']))
+  results = results.filter(status__gte=0)
   return render(request, 'trade/search.html', {'items': results, 'q': request.GET['q']})
 
 @login_required
