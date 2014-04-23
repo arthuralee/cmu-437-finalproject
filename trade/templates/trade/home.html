@@ -1,8 +1,5 @@
 {% extends "base.html" %}
 
-{% block title %} microBlog {% endblock %}
-
-
 {% block errors %}
   {% for error in errors %}
     <p class="alert alert-danger">
@@ -13,11 +10,16 @@
 
 
 {% block content %}
-<h1>Hey, {{user.first_name}}!</h1>
-<p>How are you today? Let's trade!</p>
-<p>Here are some recently added items.</p>
-<p>Here are your active trades</p>
-<p>Here are outstanding questions you have to answer</p>
+
+{% if user.authenticated %}
+  <h1>Hey, {{user.first_name}}!</h1>
+  <p>How are you today? Let's trade!</p>
+  <p>Here are some recently added items.</p>
+  <p>Here are your active trades</p>
+  <p>Here are outstanding questions you have to answer</p>
+{% else %}
+  Welcome to Trading Post. Login to view your account.
+{% endif %}
 {% endblock %}
 
 

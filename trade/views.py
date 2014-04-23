@@ -38,7 +38,6 @@ def bitch2(request):
     trade.save()
   return redirect('/')
 
-@login_required
 def home(request):
   context = {}
   return render(request, 'trade/home.html', context)

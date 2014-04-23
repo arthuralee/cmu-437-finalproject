@@ -32,8 +32,12 @@
 
         <ul class="nav nav-pills nav-stacked">
           {% if user.is_authenticated %}
-          <li>
-            <a><img src="/image/user/{{user.username}}" width="40" height="40" /> {{user.username}} (30)</a>
+          <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#"><img src="/image/user/{{user.username}}" width="40" height="40" /> {{user.username}} (30) <span class="caret"></span></a>
+
+            <ul class="dropdown-menu">
+              <li><a href="/logout">Logout</a></li>
+            </ul>
           </li>
           {% endif %}
 
@@ -44,7 +48,9 @@
             <li{%if nav.profile%} class="active"{%endif%}><a href="/user/{{user.username}}">Profile</a></li>
             <li{%if nav.catalog%} class="active"{%endif%}><a href="/manage">My catalog</a></li>
             <li{%if nav.trade%} class="active"{%endif%}><a href="/trade">My Trades</a></li>
-            <li><a href="/logout">Logout</a></li>
+          {% else %}
+            <li><a href="/login">Login</a></li>
+            <li><a href="/register">Register</a></li>
           {% endif %}
         </ul>
       </div>
