@@ -36,19 +36,19 @@
             <a class="dropdown-toggle" data-toggle="dropdown" href="#"><img src="/image/user/{{user.username}}" width="40" height="40" /> {{user.username}} (30) <span class="caret"></span></a>
 
             <ul class="dropdown-menu">
-              <li><a href="/logout">Logout</a></li>
+              <li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span>Logout</a></li>
             </ul>
           </li>
           {% endif %}
           
-          <li{%if nav.home%} class="active"{%endif%}><a href="/">Home</a></li>
+          <li{%if nav.home%} class="active"{%endif%}><a href="/"><span class="glyphicon glyphicon-home"></span>Home</a></li>
           {% if user.is_authenticated %}
-            <li{%if nav.profile%} class="active"{%endif%}><a href="/user/{{user.username}}">Profile</a></li>
-            <li{%if nav.catalog%} class="active"{%endif%}><a href="/manage">My catalog</a></li>
-            <li{%if nav.trade%} class="active"{%endif%}><a href="/trade">My Trades</a></li>
+            <li{%if nav.profile%} class="active"{%endif%}><a href="/user/{{user.username}}"><span class="glyphicon glyphicon-user"></span>Profile</a></li>
+            <li{%if nav.catalog%} class="active"{%endif%}><a href="/manage"><span class="glyphicon glyphicon-th"></span>My catalog</a></li>
+            <li{%if nav.trade%} class="active"{%endif%}><a href="/trade"><span class="glyphicon glyphicon-sort"></span>My Trades</a></li>
           {% else %}
-            <li{%if nav.login%} class="active"{%endif%}><a href="/login">Login</a></li>
-            <li{%if nav.register%} class="active"{%endif%}><a href="/register">Register</a></li>
+            <li{%if nav.login%} class="active"{%endif%}><a href="/login"><span class="glyphicon glyphicon-log-in"></span>Login</a></li>
+            <li{%if nav.register%} class="active"{%endif%}><a href="/register"><span class="glyphicon glyphicon-edit"></span>Register</a></li>
           {% endif %}
         </ul>
       </div>
