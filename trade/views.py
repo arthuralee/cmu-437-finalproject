@@ -354,7 +354,6 @@ def my_trades(request):
       else: notaccepted.append(trade) 
     elif trade.status == 1:
       havenotreceived.append(trade)
-      havereceived.append(trade) 
     elif trade.status == 2:
       if not cur1: havereceived.append(trade)
       else: havenotreceived.append(trade) 
