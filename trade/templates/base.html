@@ -43,7 +43,7 @@
           {% if user.is_authenticated %}
             <li{%if nav.profile%} class="active"{%endif%}><a href="/user/{{user.username}}">Profile</a></li>
             <li{%if nav.catalog%} class="active"{%endif%}><a href="/manage">My catalog</a></li>
-            <li{%if nav.trade%} class="active"{%endif%}><a href="/trade">Trades</a></li>
+            <li{%if nav.trade%} class="active"{%endif%}><a href="/trade">My Trades</a></li>
             <li><a href="/logout">Logout</a></li>
           {% endif %}
         </ul>

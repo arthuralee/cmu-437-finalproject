@@ -100,7 +100,7 @@
           {% else  %}
             <a href="/user/{{user.username}}">{{user.username}}</a>.
           {% endif %}
-          <a href="/trade/{{trade.id}}" color_name="pink">View Trade</a>
+          <a href="/trade/view/{{trade.id}}" color_name="pink">View Trade</a>
         {% empty %}
           Nobody :(
         {% endfor %}

@@ -24,8 +24,8 @@
           <img src="{% url 'image' item.id %}">
         {% endif %}
         <div class="item-info">
-          <div class="item-desc">{{item.desc}}</div>
-          Posted: {{item.date_time}} (<a href="/delete-item/{{item.id}}">x</a>)
+          <div class="item-desc"><a href="/item/{{item.id}}">{{item.desc}}</a></div>
+          Posted: {{item.date_time}} <a href="/delete-item/{{item.id}}">Remove Item</a>
         </div>
       </div>
     </li>

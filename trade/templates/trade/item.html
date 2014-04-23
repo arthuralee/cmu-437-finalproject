@@ -22,8 +22,36 @@
   {% endif %}
   <br><br>
 
+  <h4>Owner</h4>
+    {{item.user.first_name}} (user profile: <a href="/user/{{item.user.username}}">{{item.user.username}}</a>)
+  <br><br>
+
   <h4>Description</h4>
-  {{item.desc}}
+  {{item.status}}
+  <br><br>
+
+  <h4>Status</h4>
+  {% if user.id == item.user.id %}
+    Don't worry, all the information is available only for you, {{user.first_name}}<br>
+    This item is currently in the following trades: <br>
+    {% for trade in trades %}
+      <a href="/trade/view/{{trade.id}}">Trade {{trade.id}}</a> <br>
+    {% empty %}
+      None
+    {% endfor %}
+
+    {% if item.status < 0 %}
+      This item was part of <a href="/trade/view/{{trade_id}}">Trade {{in_trades|first}}</a>
+    {% endif %}
+  {% else %}
+    {% if item.status == 0 %}
+      This item is currently in {{trades|length}} trade(s), not yet accepted by {{item.user.username}}
+    {% elif item.status > 0 %}
+      This item is currently in {{trades|length}} trade(s) in progress, one of which is accepted by {{item.user.username}}
+    {% else %}
+      This item is no longer available for trading
+    {% endif %}
+  {% endif %}
   <br><br>
 
   <h4>User questions</h4>

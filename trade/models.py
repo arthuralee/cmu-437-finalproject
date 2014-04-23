@@ -8,6 +8,10 @@ class Item(models.Model):
   user = models.ForeignKey(User)
   date_time = models.DateTimeField(auto_now=True)
   image = models.ImageField(upload_to="items", blank=True)
+  status = models.IntegerField(default=0)
+  # < 0 : dead
+  # == 0: available
+  # > 0: in trade
   def __unicode__(self):
 	 return self.desc
 
@@ -33,6 +37,10 @@ class Trade(models.Model):
   # -1 -> complete
   # -2 -> cancelled
 
+class ItemData(models.Model):
+  item = models.OneToOneField(Item)
+  in_trades = models.ManyToManyField(Trade)
+  acc_trade = models.IntegerField(default=0)
 
 class TradeMsg(models.Model):
   date = models.DateTimeField(auto_now=True)

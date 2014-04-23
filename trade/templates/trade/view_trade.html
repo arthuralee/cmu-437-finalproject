@@ -24,7 +24,7 @@ You have successfully created your trade! Here it is:
 <div class="profile">
   Trade involving {{trade.user1.username}} and {{trade.user2.username}} <br>
    <br>
-   STATUS:  
+   STATUS:   {{trade.status}}
    {% if trade.status == -2 %} CANCELLED
    {% elif trade.status == -1 %} COMPLETED
    {% elif trade.status == 0 %} AWAITING ACCEPTANCE FROM {{trade.user2.username}}
@@ -88,7 +88,7 @@ You have successfully created your trade! Here it is:
   {% if not received %}
     Have you received your items yet? Click if you have
     <a class="btn btn-primary" href="/trade?action=received&id={{trade.id}}">HERE</a> 
-  {% endif %}
+  {% endif %} <br>
 
   {% if trade.status == 2 %}
     {% if not cur1 %} 
@@ -103,6 +103,13 @@ You have successfully created your trade! Here it is:
       {{trade.user2.username}} has received your items
     {% else %} 
       {{trade.user2.username}} has not received your items
+    {% endif %}
+  {% elif trade.status == 1 %}
+    {% if cur1 %} 
+      <!-- no one received -->
+      {{trade.user2.username}} has not received your items
+    {% else %} 
+      {{trade.user1.username}} has not received your items
     {% endif %}
   {% else %}
   {% endif %} 

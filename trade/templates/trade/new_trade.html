@@ -39,7 +39,8 @@
       <input type="checkbox" checked name="user1selectitems" value="{{item.id}}">Toggle
       </li>
     {% endfor %}
-    <!-- These items arent selected -->
+
+    <!-- These items are available -->
     {% for item in user1restitems %}
       <li class="panel panel-default">
         <div class="panel-body">
@@ -52,6 +53,21 @@
           </div>
         </div>
       <input type="checkbox" name="user1selectitems" value="{{item.id}}">Toggle
+      </li>
+    {% endfor %}
+    <!-- These items arent available -->
+    {% for item in user1deaditems %}
+      <li class="panel panel-default">
+        <div class="panel-body">
+          {% if item.image %}
+            <img src="{% url 'image' item.id %}">
+          {% endif %}
+          <div class="item-info">
+            <div class="item-desc"><a href="/item/{{item.id}}">{{item.desc}}</a></div>
+            Posted: {{item.date_time}}
+          </div>
+        </div>
+      <input type="checkbox" disabled name="user1selectitems" value="{{item.id}}">Toggle
       </li>
     {% endfor %}
   </ul>
@@ -75,6 +91,7 @@
       </li>
     {% endfor %}
 
+    <!-- These items are available -->
     {% for item in user2restitems %}
       <li class="panel panel-default">
         <div class="panel-body">
@@ -87,6 +104,22 @@
           </div>
         </div>
          <input type="checkbox" name="user2selectitems" value="{{item.id}}">Toggle
+      </li>
+    {% endfor %}
+
+    <!-- These items arent available -->
+    {% for item in user1deaditems %}
+      <li class="panel panel-default">
+        <div class="panel-body">
+          {% if item.image %}
+            <img src="{% url 'image' item.id %}">
+          {% endif %}
+          <div class="item-info">
+            <div class="item-desc"><a href="/item/{{item.id}}">{{item.desc}}</a></div>
+            Posted: {{item.date_time}}
+          </div>
+        </div>
+      <input type="checkbox" disabled name="user1selectitems" value="{{item.id}}">Toggle
       </li>
     {% endfor %}
 
