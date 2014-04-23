@@ -1,61 +1,66 @@
 {% extends "base.html" %}
 
-{% block title %} microBlog -- Register {% endblock %}
-
 {% block errors %} 
-{% for error in errors %}
-<p class="alert alert-danger">
-{{ error }}
-</p>
-{% endfor %}
+  {% if errors %}
+    <p class="alert alert-danger">
+      {% for error in errors %}
+        {{ error }}<br>
+      {% endfor %}
+    </p>
+  {% endif %}
 {% endblock %}
 
-
-{% block header %} microBlog Registration {% endblock %}
-{% block subheader %} All fields are required. {% endblock %}
-
 {% block content %}
-<div class="blog">
+<h1>Get started</h1>
+
+<div class="alert alert-default">
+  <p>Already have an account? <a href="/login">Login!</a></p>
+</div>
 <form role="form" method="post" action="/register">
-<div class="form-group">
-  <label>Username:</label>
-  <input type="text" class="form-control" 
-   name="username" value="{{username}}" placeholder="max 15 characters">
-</div>
+  <div class="row">
+    <div class="form-group col-md-6">
+      <label>Username:</label>
+      <input type="text" class="form-control" 
+       name="username" value="{{username}}" placeholder="max 15 characters" required>
+    </div>
+    <div class="form-group col-md-6">
+      <label>E-mail:</label>
+      <input type="text" class="form-control"
+       name="email" value="{{email}}"placeholder="example@website.com">
+    </div>
+  </div>
 
-<div class="form-group">
-  <label>First Name:</label>
-  <input type="text" class="form-control" 
-   name="first_name" value="{{first_name}}" placeholder="Jane">
-</div>
+  <div class="row">
+    <div class="form-group col-md-6">
+      <label>First Name:</label>
+      <input type="text" class="form-control" 
+       name="first_name" value="{{first_name}}" placeholder="Jane">
+    </div>
 
-<div class="form-group">
-  <label>Last Name:</label>
-  <input type="text" class="form-control"
-   name="last_name" value="{{last_name}}" placeholder="Doe">
-</div>
+    <div class="form-group col-md-6">
+      <label>Last Name:</label>
+      <input type="text" class="form-control"
+       name="last_name" value="{{last_name}}" placeholder="Doe">
+    </div>
+  </div>
+  
+  <div class="row">
+    <div class="form-group col-md-6">
+        <label>Password:</label>
+        <input type="password" class="form-control"name="password1">
+    </div>
 
-<div class="form-group">
-  <label>E-mail:</label>
-  <input type="text" class="form-control"
-   name="email" value="{{email}}"placeholder="example@website.com">
-</div>
+    <div class="form-group col-md-6">
+        <label>Confirm password:</label>
+        <input type="password" class="form-control" name="password2">
+    </div>
+  </div>
 
-<div class="form-group">
-    <label>Password:</label>
-    <input type="password" class="form-control"name="password1">
-</div>
+  <p class="help-block">After registration, an e-mail will be sent to you with a verification link. </p>
 
-<div class="form-group">
-    <label>Confirm password:</label>
-    <input type="password" class="form-control" name="password2">
-</div>
-After registration, an e-mail will be sent to you with a verification link. 
-<br><br>
-<button type="submit" class="btn btn-info">Submit</button>
-{% csrf_token %}
+  <button type="submit" class="btn btn-info">Register</button>
+  {% csrf_token %}
 </form>
-Already have an account? <a href="/login">Log in!</a>
-</div>
+
 {% endblock %}
 

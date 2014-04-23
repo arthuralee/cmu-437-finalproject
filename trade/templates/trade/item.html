@@ -2,7 +2,6 @@
 
 {% block title %} Profile {% endblock %}
 
-
 {% block errors %}
   {% for error in errors %}
     <p class="alert alert-danger">
@@ -10,9 +9,6 @@
     </p>
   {% endfor %}
 {% endblock %}
-
-{% block header %}Item details{% endblock %}
-{% block subheader %}{{item.desc}}{% endblock %}
 
 {% block content %}
 

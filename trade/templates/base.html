@@ -40,17 +40,15 @@
             </ul>
           </li>
           {% endif %}
-
-
-
+          
           <li{%if nav.home%} class="active"{%endif%}><a href="/">Home</a></li>
           {% if user.is_authenticated %}
             <li{%if nav.profile%} class="active"{%endif%}><a href="/user/{{user.username}}">Profile</a></li>
             <li{%if nav.catalog%} class="active"{%endif%}><a href="/manage">My catalog</a></li>
             <li{%if nav.trade%} class="active"{%endif%}><a href="/trade">My Trades</a></li>
           {% else %}
-            <li><a href="/login">Login</a></li>
-            <li><a href="/register">Register</a></li>
+            <li{%if nav.login%} class="active"{%endif%}><a href="/login">Login</a></li>
+            <li{%if nav.register%} class="active"{%endif%}><a href="/register">Register</a></li>
           {% endif %}
         </ul>
       </div>

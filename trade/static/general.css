@@ -1,6 +1,15 @@
 /* Kill bootstrap responsiveness */
 .container {
   width: 1170px;
+  padding-bottom: 30px;
+}
+.alert-default {
+  background-color: #f5f5f5;
+  border-color: #ddd;
+  color: #333;
+}
+.alert-default a {
+  color: #555;
 }
 
 #logo {
@@ -77,15 +86,6 @@
     color: black;
   }
 
-
-#sidebar .btn-group-vertical {
-  width: 80%;
-  display: block;
-}
-
-#sidebar .btn {
-  margin-left: 3em;
-}
 
 .blue{
   color: rgb(91, 192, 222);
