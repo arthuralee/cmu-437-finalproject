@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 
 class Item(models.Model):
   desc = models.CharField(max_length=200)
+  longdesc = models.CharField(max_length=1000)
   user = models.ForeignKey(User)
   date_time = models.DateTimeField(auto_now=True)
   image = models.ImageField(upload_to="items", blank=True)

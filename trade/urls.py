@@ -2,15 +2,18 @@ from django.conf.urls import patterns, include, url
 
 urlpatterns = patterns('',
     url(r'^$', 'trade.views.home'),
+    
+    url(r'^user/edit$', 'trade.views.profile_edit'),
     url(r'^user/(?P<id>.+)$', 'trade.views.profile'),
+
     url(r'^add-item', 'trade.views.add_item'),
     url(r'^delete-item/(?P<id>\d+)$', 'trade.views.delete_item'),
-    url(r'^item/(?P<id>.+)/question$', 'trade.views.item_question'),
-    url(r'^item/(?P<id>.+)$', 'trade.views.item_single'),
-    url(r'^trade/view/(?P<id>.+)$', 'trade.views.trade_view'),
-    url(r'^trade/new/(?P<id>.+)$', 'trade.views.trade_single'),
-    url(r'^trade/confirm/(?P<id>.+)$', 'trade.views.trade_confirm'),
-    url(r'^trade/(?P<id>.+)/message$', 'trade.views.trade_message'),
+    url(r'^item/(?P<id>\d+)/question$', 'trade.views.item_question'),
+    url(r'^item/(?P<id>\d+)$', 'trade.views.item_single'),
+    url(r'^trade/view/(?P<id>\d+)$', 'trade.views.trade_view'),
+    url(r'^trade/new/(?P<id>\d+)$', 'trade.views.trade_single'),
+    url(r'^trade/confirm/(?P<id>\d+)$', 'trade.views.trade_confirm'),
+    url(r'^trade/(?P<id>\d+)/message$', 'trade.views.trade_message'),
     url(r'^trade', 'trade.views.trade_action'),
 
     url(r'^search', 'trade.views.search'),

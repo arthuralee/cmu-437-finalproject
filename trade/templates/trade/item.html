@@ -16,45 +16,50 @@
 
 {% block content %}
 
-  {% if item.image %}
-    <h4>Image</h4>
-    <img src="{% url 'image' item.id %}">
-  {% endif %}
-  <br><br>
+  <h1>{{item.desc}}</h1>
 
-  <h4>Owner</h4>
-    {{item.user.first_name}} (user profile: <a href="/user/{{item.user.username}}">{{item.user.username}}</a>)
-  <br><br>
+  <div class="row">
+    <div class="col-md-6">
+      {% if item.image %}
+        <h4>Image</h4>
+        <img src="{% url 'image' item.id %}">
+      {% endif %}
+    </div>
+    <div class="col-md-6">
+      <h4>Owner</h4>
+        <a href="/user/{{item.user.username}}">{{item.user.username}}</a> ({{item.user.rep}})
+      <br><br>
+      <h4>Status</h4>
+      {% if user.id == item.user.id %}
+        Don't worry, all the information is available only for you, {{user.first_name}}<br>
+        This item is currently in the following trades: <br>
+        {% for trade in trades %}
+          <a href="/trade/view/{{trade.id}}">Trade {{trade.id}}</a> <br>
+        {% empty %}
+          None
+        {% endfor %}
+
+        {% if item.status < 0 %}
+          This item was part of <a href="/trade/view/{{trade_id}}">Trade {{in_trades|first}}</a>
+        {% endif %}
+      {% else %}
+        {% if item.status == 0 %}
+          This item is currently in {{trades|length}} trade(s), not yet accepted by {{item.user.username}}
+        {% elif item.status > 0 %}
+          This item is currently in {{trades|length}} trade(s) in progress, one of which is accepted by {{item.user.username}}
+        {% else %}
+          This item is no longer available for trading
+        {% endif %}
+      {% endif %}
+    </div>
+
+  </div>
 
   <h4>Description</h4>
-  {{item.status}}
+  {{item.longdesc}}
   <br><br>
 
-  <h4>Status</h4>
-  {% if user.id == item.user.id %}
-    Don't worry, all the information is available only for you, {{user.first_name}}<br>
-    This item is currently in the following trades: <br>
-    {% for trade in trades %}
-      <a href="/trade/view/{{trade.id}}">Trade {{trade.id}}</a> <br>
-    {% empty %}
-      None
-    {% endfor %}
-
-    {% if item.status < 0 %}
-      This item was part of <a href="/trade/view/{{trade_id}}">Trade {{in_trades|first}}</a>
-    {% endif %}
-  {% else %}
-    {% if item.status == 0 %}
-      This item is currently in {{trades|length}} trade(s), not yet accepted by {{item.user.username}}
-    {% elif item.status > 0 %}
-      This item is currently in {{trades|length}} trade(s) in progress, one of which is accepted by {{item.user.username}}
-    {% else %}
-      This item is no longer available for trading
-    {% endif %}
-  {% endif %}
-  <br><br>
-
-  <h4>User questions</h4>
+  <h4>Q&amp;A</h4>
   {% for question in questions %}
   <div class="panel panel-default">
     <div class="panel-heading">{{question.user.username}}: <strong>{{question.q}}</strong></div>

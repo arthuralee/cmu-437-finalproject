@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
+from django.conf import settings
 
 # Decorator to use built-in authentication system
 from django.contrib.auth.decorators import login_required
@@ -9,6 +10,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate
 from django.core.mail import send_mail
 from django.contrib.auth.tokens import default_token_generator
+from django.utils.datastructures import MultiValueDictKeyError
 
 from mimetypes import guess_type
 from django.http import HttpResponse, Http404
@@ -55,20 +57,46 @@ def manage(request):
   items = Item.objects.filter(user=request.user).order_by('-date_time')
   return render(request, 'trade/manage.html', {'items' : items})
 
+@login_required
 def profile(request, id):
   # Sets up list of just the logged-in user's (request.user's) items
-  user = User.objects.get(username = id)
+  user = User.objects.get(username=id)
+  userdata = UserData.objects.get(user=user)
   all_items = Item.objects.filter(user=user)
   items = all_items.filter(status__gte=0).order_by('-date_time')
   deaditems = all_items.exclude(status__gte=0).order_by('-date_time')
+  user = {
+    'id': user.id,
+    'username': user.username,
+    'first_name': user.first_name,
+    'last_name': user.last_name,
+    'rep': userdata.rep,
+    'loc': userdata.loc,
+    'img': userdata.image
+  }
   return render(request, 'trade/profile.html', 
     {'items' : items,
      'deaditems': deaditems,
-     'userid': user.id,
-     'username' : user.username,
-     'first_name' : user.first_name,
-     'last_name' : user.last_name}
+     'profile_user': user}
     )
+
+@login_required
+def profile_edit(request):
+  user = request.user
+  userdata = UserData.objects.get(user=user)
+
+  try:
+    user.first_name = request.POST['first_name']
+    user.last_name = request.POST['last_name']
+    userdata.loc = request.POST['loc']
+    if 'image' in request.FILES:
+      userdata.image = request.FILES['image']
+    user.save()
+    userdata.save()
+    return redirect('/user/' + user.username)
+  except MultiValueDictKeyError:
+    pass
+  return redirect('/')  
 
 ##########################
 #     Item functions     #
@@ -94,6 +122,17 @@ def get_image(request, id):
     raise Http404
   content_type = guess_type(item.image.name)
   return HttpResponse(item.image, mimetype=content_type)
+
+@login_required
+def get_user_image(request, username):
+  user = get_object_or_404(User, username=username)
+  userdata = UserData.objects.get(user=user)
+  if not userdata.image:
+    image_data = open(settings.MEDIA_ROOT + "users/avatar-blank.jpg", "rb").read()
+    return HttpResponse(image_data, mimetype="image/png")
+    raise Http404
+  content_type = guess_type(userdata.image.name)
+  return HttpResponse(userdata.image, mimetype=content_type)
 
 @login_required
 def delete_item(request, id):

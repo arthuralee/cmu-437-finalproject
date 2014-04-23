@@ -1,3 +1,8 @@
+/* Kill bootstrap responsiveness */
+.container {
+  width: 1170px;
+}
+
 #logo {
   height: 82px;
   text-align: center;

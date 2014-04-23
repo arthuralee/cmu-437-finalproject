@@ -33,7 +33,7 @@
         <ul class="nav nav-pills nav-stacked">
           {% if user.is_authenticated %}
           <li>
-            <a><img src="https://scontent-a-lga.xx.fbcdn.net/hphotos-ash2/t1.0-9/398511_10150463491055810_1684691940_n.jpg" width="40" height="40" /> {{user.username}} (30)</a>
+            <a><img src="/image/user/{{user.username}}" width="40" height="40" /> {{user.username}} (30)</a>
           </li>
           {% endif %}
 
