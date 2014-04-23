@@ -9,10 +9,14 @@
 {% endblock %}
 
 {% block content %}
-<div class="pull-right">
-  <button class="btn btn-default" data-toggle="modal" data-target="#addModal"><span class="glyphicon glyphicon-plus"></button>
+<div class="row">
+  <div class="col-md-12">
+    <div class="pull-right">
+      <button class="btn btn-default" data-toggle="modal" data-target="#addModal"><span class="glyphicon glyphicon-plus"></span> add item</button>
+    </div>
+    <h1>my catalog</h1>
+  </div>
 </div>
-<h1>my catalog</h1>
 
 <ul class="item-list">
   {% for item in items %}
