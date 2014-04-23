@@ -20,7 +20,7 @@ def nav(request):
   nav = {}
   if request.path == "/":
     nav['home'] = True
-  elif 'profile' in request.path and request.user.username in request.path:
+  elif 'user' in request.path and request.user.username in request.path:
     nav['profile'] = True
   elif 'manage' in request.path:
     nav['catalog'] = True
