@@ -11,7 +11,7 @@
 
 {% block content %}
 
-{% if user.authenticated %}
+{% if user.is_authenticated %}
   <h1>Hey, {{user.first_name}}!</h1>
   <p>How are you today? Let's trade!</p>
   <p>Here are some recently added items.</p>
