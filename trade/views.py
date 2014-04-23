@@ -344,8 +344,9 @@ def my_trades(request):
   havereceived = []
   havenotreceived = []
   for trade in trades:
-    cur1 = 0 # 1 if user == user1, 0 ow
-    if request.user.id == trade.user1.id: cur1 = 1
+    # 1 if user == user1, 0 ow
+    cur1 = request.user.id == trade.user1.id
+
     if trade.status == -1:
       completed.append(trade)
     elif trade.status == 0:
@@ -361,7 +362,7 @@ def my_trades(request):
       if cur1: havereceived.append(trade)
       else: havenotreceived.append(trade)
     else:
-      cancelled.add(trade)
+      cancelled.append(trade)
   accepted.reverse()
   notaccepted.reverse()
   cancelled.reverse()
