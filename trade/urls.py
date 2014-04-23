@@ -10,7 +10,6 @@ urlpatterns = patterns('',
     url(r'^trade/view/(?P<id>.+)$', 'trade.views.trade_view'),
     url(r'^trade/new/(?P<id>.+)$', 'trade.views.trade_single'),
     url(r'^trade/confirm/(?P<id>.+)$', 'trade.views.trade_confirm'),
-    url(r'^trade/modify/(?P<id>.+)$', 'trade.views.trade_modify'),
     url(r'^trade/(?P<id>.+)/message$', 'trade.views.trade_message'),
     url(r'^trade', 'trade.views.trade_action'),
 

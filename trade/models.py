@@ -24,6 +24,15 @@ class Trade(models.Model):
   date_created = models.DateTimeField(auto_now=True)
   date_completed = models.DateTimeField(blank=True, null=True)
   status = models.IntegerField(default=0)
+  # 0 -> user1 accepted
+
+  # 1 -> both accepted
+  # 2 -> user1 recieved items
+  # 3 -> user2 recieved items
+
+  # -1 -> complete
+  # -2 -> cancelled
+
 
 class TradeMsg(models.Model):
   date = models.DateTimeField(auto_now=True)

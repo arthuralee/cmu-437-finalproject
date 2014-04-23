@@ -141,17 +141,41 @@ def trade_action(request):
   if 'action' not in request.GET:
     user = request.user
     trades = Trade.objects.filter(Q(user1=request.user) | Q(user2=request.user))
-    active = []
+    accepted = []
+    notaccepted = []
     cancelled = []
     completed = []
+    havereceived = []
+    havenotreceived = []
     for trade in trades:
-      if trade.status == 0:
-        active.append(trade)
-      elif trade.status == 1:
-        cancelled.append(trade)
-      elif trade.status == 2:
+      cur1 = 0 # 1 if user == user1, 0 ow
+      if user.id == trade.user1.id: cur1 = 1
+      if trade.status == -1:
         completed.append(trade)
-    return render(request, 'trade/my_trades.html', {'active_trades': active,
+      elif trade.status == 0:
+        if cur1: accepted.append(trade)
+        else: notaccepted.append(trade) 
+      elif trade.status == 1:
+        havenotreceived.append(trade)
+        havereceived.append(trade) 
+      elif trade.status == 2:
+        if not cur1: havereceived.append(trade)
+        else: havenotreceived.append(trade) 
+      elif trade.status == 3:
+        if cur1: havereceived.append(trade)
+        else: havenotreceived.append(trade)
+      else:
+        cancelled.append(trade)
+    accepted.reverse()
+    notaccepted.reverse()
+    cancelled.reverse()
+    completed.reverse()
+    havereceived.reverse()
+    havenotreceived.reverse()
+    return render(request, 'trade/my_trades.html', {'accepted_trades': accepted,
+                                                    'notaccepted_trades': notaccepted,
+                                                    'haverecieved_trades': havereceived,
+                                                    'havenotreceived_trades': havenotreceived,
                                                     'cancelled_trades': cancelled,
                                                     'completed_trades': completed})
   else:
@@ -161,30 +185,68 @@ def trade_action(request):
       # create trade, redirect
       user2 = User.objects.get(username=request.GET['with'])
       newtrade = Trade(user1=request.user, user2=user2)
+      newtrade.status = 0
       newtrade.save()
       return redirect('/trade/new/' + str(newtrade.id));
     elif ac == 'cancel':
       try:
         trade = Trade.objects.get(id=request.GET['id'])
-        trade.delete()
+        trade.status = -2
+        trade.save()
       except ObjectDoesNotExist:
         pass
       return redirect('/trade') # show successful message
+    elif ac == 'accept':
+      try:
+        trade_id = request.GET['id']
+        trade = Trade.objects.get(id=trade_id)
+        trade.status = 1
+        trade.save()
+      except ObjectDoesNotExist:
+        pass
+      return redirect('/trade/view/'+str(trade_id)) 
+    elif ac == 'modify':
+      try:
+        trade_id = request.GET['id']
+      except ObjectDoesNotExist:
+        redirect('/trade')
+      return trade_modify(request, trade_id) 
+    elif ac == 'received':
+      try:
+        trade_id = request.GET['id']
+        trade = Trade.objects.get(id=trade_id)
+        if (trade.status == 2) or (trade.status == 3):
+          # trade complete
+          trade.status = -1
+        elif trade.status == 1:
+          cur1 = 0
+          if request.user.id == trade.user1.id: cur1 = 1
+          if cur1: trade.status = 2
+          else: trade.status = 3
+        trade.save()
+      except ObjectDoesNotExist:
+        pass
+      return redirect('/trade/view/'+str(trade_id)) 
     else:
       return redirect('/trade')
 
 @login_required
 def trade_modify(request, id):
   old_trade = Trade.objects.get(id=id)
-  new_trade = Trade(user1=old_trade.user1, 
-                    user2=old_trade.user2)
+  new_trade = Trade(user1=old_trade.user2, 
+                    user2=old_trade.user1)
   new_trade.save()
   new_trade.items = old_trade.items.all()
+  new_trade.status = 0
+  new_trade.save()
+  old_trade.status = -2 # cancel old trade
   return redirect('/trade/new/' + str(new_trade.id))
 
 @login_required
 def trade_confirm(request, id):
   trade = Trade.objects.get(id=id)
+  cur1 = 0 # 1 if user == user1, 0 ow
+  if request.user.id == trade.user1.id: cur1 = 1
   def getItem(item_id): return Item.objects.get(id=item_id)
   if 'user1selectitems' in request.POST:
     user1selectitems = map(getItem, request.POST.getlist('user1selectitems'))
@@ -195,19 +257,21 @@ def trade_confirm(request, id):
   else:
     user2selectitems = []
   trade.items = user1selectitems + user2selectitems
+  trade.save()
   return render(request, 'trade/view_trade.html', 
     {
-      'id': trade.id,
-      'user1': trade.user1,
-      'user2': trade.user2, 
+      'trade': trade,
       'user1selectitems': user1selectitems,
       'user2selectitems': user2selectitems,
-      'justmade': 1,
+      'received': -1,
+      'cur1': cur1,
     })
 
 @login_required
 def trade_view(request, id):
   trade = Trade.objects.get(id=id)
+  cur1 = 0 # 1 if user == user1, 0 ow
+  if request.user.id == trade.user1.id: cur1 = 1
   user1selectitems = []
   user2selectitems = []
   for item in trade.items.all():
@@ -215,14 +279,17 @@ def trade_view(request, id):
       user1selectitems.append(item)
     else:
       user2selectitems.append(item)
+  if ((cur1 and (trade.status == 2)) or
+      ((not cur1) and (trade.status == 3))):
+    received = 1
+  else: received = 0
   return render(request, 'trade/view_trade.html', 
     {
-      'id': trade.id,
-      'user1': trade.user1,
-      'user2': trade.user2, 
+      'trade': trade,
       'user1selectitems': user1selectitems,
       'user2selectitems': user2selectitems,
-      'justmade': 0,
+      'received': received,
+      'cur1': cur1,
     })
 
 def trade_message(request, id):
