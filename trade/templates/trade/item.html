@@ -65,19 +65,29 @@
       {% if question.a %}
         {{question.item.user.username}}: <strong>{{question.a}}</strong>
       {% else %}
-        <em>The owner has not responded to this question</em>
+        {% if is_owner %}
+          <form action="/item/{{item.id}}/answer" method="post" class="form-inline" role="form">
+            <input type="text" placeholder="Answer this question" class="form-control" size="78" name="answer" required />
+            {% csrf_token %}
+            <button type="submit" class="btn btn-default btn-sm">Answer</button>
+          </form>
+        {% else %}
+          <em>The owner has not responded to this question</em>
+        {% endif %}
       {% endif %}
     </div>
   </div>
   {% endfor %}
 
-  <form class="form-inline" role="form" method="post" action="/item/{{item.id}}/question">
-    <div class="form-group">
-      <input type="text" class="form-control" name="q" placeholder="Ask a question" size="100" />
-      <button type="submit" class="btn btn-default">Ask</button>
-      {% csrf_token %}
-    </div>
-  </form>
+  {% if not is_owner %}
+    <form class="form-inline" role="form" method="post" action="/item/{{item.id}}/question">
+      <div class="form-group">
+        <input type="text" class="form-control" name="q" placeholder="Ask a question" autocomplete="off" size="84" />
+        <button type="submit" class="btn btn-default btn-sm">Ask</button>
+        {% csrf_token %}
+      </div>
+    </form>
+  {% endif %}
 
 </div>
 {% endblock %}

@@ -7,6 +7,7 @@ urlpatterns = patterns('',
     url(r'^user/(?P<id>.+)$', 'trade.views.profile'),
 
     url(r'^item/(?P<id>\d+)/question$', 'trade.views.item_question'),
+    url(r'^item/(?P<id>\d+)/answer$', 'trade.views.item_answer'),
     url(r'^item/(?P<id>\d+)$', 'trade.views.item_single'),
     url(r'^item/add', 'trade.views.add_item'),
     url(r'^item/(?P<id>\d+)/delete$', 'trade.views.delete_item'),

@@ -25,7 +25,7 @@ You have successfully created your trade! Here it is:
       <ul id="messages">
       </ul>
       <form method="post" action="/trade/{{id}}/message" id="chatform">
-        <input type="text" class="form-control" name="q" id="chattext" placeholder="Type a message then press enter" />
+        <input type="text" class="form-control" name="q" id="chattext" autocomplete="off" placeholder="Type a message then press enter" />
         {% csrf_token %}
       </form>
     </div>

@@ -150,6 +150,7 @@ def delete_item(request, id):
 def item_single(request, id):
   item = Item.objects.get(id=id)
   owner = UserData.objects.get(user=item.user)
+  is_owner = item.user == request.user
   owner = {
     'username': item.user.username,
     'rep': owner.rep,
@@ -163,12 +164,21 @@ def item_single(request, id):
   return render(request, 'trade/item.html', {'item': item,
                                              'trades': trades,
                                              'owner': owner, 
-                                             'questions': questions})
+                                             'questions': questions,
+                                             'is_owner': is_owner})
 
 def item_question(request, id):
   if request.method == 'POST':
     item = Item.objects.get(id=id)
     q = ItemQuestion(user=request.user, item=item, q=request.POST['q'])
+    q.save()
+    return redirect('/item/' + str(id))
+  return redirect('/')
+
+def item_answer(request, id):
+  if request.method == 'POST':
+    q = ItemQuestion.objects.get(item=Item.objects.get(id=id))
+    q.a = request.POST['answer']
     q.save()
     return redirect('/item/' + str(id))
   return redirect('/')
