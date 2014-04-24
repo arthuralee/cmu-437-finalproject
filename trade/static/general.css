@@ -67,7 +67,10 @@
   width: 100%;
 }
 
-
+.glyphicon.gray {
+  font-size: 0.8em;
+  color: #999;
+}
 
 
 

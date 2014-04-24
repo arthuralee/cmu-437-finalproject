@@ -24,6 +24,9 @@
     <ul class="list-unstyled">
       <li><strong>Reputation</strong>: {{profile_user.rep}}</li>
       <li><strong>Location</strong>: {{profile_user.loc}}</li>
+      {% if user.id == profile_user.id %}
+        <li><span class="glyphicon glyphicon-lock gray" title="Only visible to you"></span> <strong>Email</strong>: {{profile_user.email}}</li>
+      {% endif %}
     </ul>
   </div>
   <div class="col-md-5">
