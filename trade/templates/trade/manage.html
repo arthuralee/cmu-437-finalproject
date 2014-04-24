@@ -59,4 +59,28 @@
   </div>
 </div>
 
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Are you sure?</h4>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to unlist <strong id="delete-item"></strong>?
+      </div>
+      <div class="modal-footer">
+        <a href="#" id="delete-yes" type="submit" class="btn btn-danger">yes</a>
+        <button type="button" class="btn btn-default" data-dismiss="modal">no</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+function launchDeleteModal(desc,id) {
+  $('#delete-item').html(desc);
+  $('#delete-yes').attr('href', '/item/' + id + '/delete');
+  $('#deleteModal').modal();
+}
+</script>
 {% endblock %}

@@ -8,9 +8,7 @@ PROJECT_ROOT = os.path.realpath(os.path.dirname(__file__)) + '/'
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
-ADMINS = (
-    ('Linda Li', 'lxl@andrew.cmu.edu'),
-)
+ADMINS = ()
 
 MANAGERS = ADMINS
 
@@ -166,6 +164,4 @@ LOGIN_REDIRECT_URL = '/'
 
 # email things
 
-#EMAIL_HOST = 'smtp.srv.cs.cmu.edu'
-
-
+EMAIL_HOST = 'smtp.srv.cs.cmu.edu'
