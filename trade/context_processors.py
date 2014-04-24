@@ -2,19 +2,12 @@ from django.contrib.auth.models import User
 from trade.models import *
 from django.db.models import Q
 
-def get_users(request):
-  return {}
-  if not request.user.is_authenticated(): 
-    return {'users' : User.objects.all().order_by('username')}
-  users = []
-  followers = UserWithFollowers.objects.get(user=request.user.username).followers.all()
-  for user in User.objects.all():
-    if user in followers:
-      user.btn_style = 'btn-info'
-    else:
-      user.btn_style = 'btn-default'
-    users.append(user)
-  return {'users' : sorted(users, key=lambda u: u.username)}
+def get_userdata(request):
+  if not request.user.is_authenticated():
+    return {}
+
+  userdata = UserData.objects.get(user=request.user)
+  return {'userdata' : userdata}
 
 def nav(request):
   nav = {}
