@@ -28,7 +28,7 @@ class Item(models.Model):
   desc = models.CharField(max_length=200)
   longdesc = models.CharField(max_length=1000)
   user = models.ForeignKey(User)
-  date_time = models.DateTimeField(auto_now=True)
+  date_time = models.DateTimeField(auto_now_add=True)
   image = models.ImageField(upload_to="items", blank=True)
   in_trades = models.ManyToManyField(Trade, blank=True)
   acc_trade = models.ForeignKey(Trade, blank=True, null=True, on_delete=models.SET_NULL, related_name="acc_trade")
