@@ -196,7 +196,6 @@ def trade_cancel(request, id):
     trade = Trade.objects.get(id=id)
     trade.status = -2
     for item in Item.objects.filter(in_trades=trade):
-      item.in_trades.remove(trade)
       if item.acc_trade == trade.id:
         item.status = 0
         item.acc_trade = None
@@ -290,46 +289,8 @@ def trade_new_post(request):
   return trade_confirm(request, str(newtrade.id))
 
 @login_required
-def trade_x(request):
-  # Sets up list of just the logged-in user's (request.user's) items
-  trade = Trade.objects.get(id=id)
-  user1selectitems = []
-  user1restitems = []
-  user1deaditems = []
-  user2selectitems = []
-  user2restitems = []
-  user2deaditems = []
-  items1 = Item.objects.filter(user=trade.user1).filter(status__gte=0).order_by('-date_time')
-  items2 = Item.objects.filter(user=trade.user2).filter(status__gte=0).order_by('-date_time')
-  for item in items1:
-    if item in trade.items.all():
-      user1selectitems.append(item)
-    else:
-      if item.status > 0:
-        user1deaditems.append(trade)
-      else: user1restitems.append(item)
-  for item in items2:
-    if item in trade.items.all():
-      user2selectitems.append(item)
-    else:
-      if item.status > 0:
-        user2deaditems.append(trade)
-      else: user2restitems.append(item)
-  return render(request, 'trade/new_trade.html', 
-    {
-      'id': trade.id,
-      'user1': trade.user1,
-      'user2': trade.user2, 
-      'user1selectitems': user1selectitems,
-      'user2selectitems': user2selectitems,
-      'user1deaditems': user1deaditems,
-      'user1restitems': user1restitems,
-      'user2restitems': user2restitems,
-      'user2deaditems': user2deaditems,
-    })
-
-@login_required
 def trade_modify(request, id):
+  return
   old_trade = Trade.objects.get(id=id)
   new_trade = Trade(user1=old_trade.user2, 
                     user2=old_trade.user1)
@@ -372,8 +333,7 @@ def trade_confirm(request, id):
 @login_required
 def trade_view(request, id):
   trade = Trade.objects.get(id=id)
-  cur1 = 0 # 1 if user == user1, 0 ow
-  if request.user.id == trade.user1.id: cur1 = 1
+  cur1 = request.user.id == trade.user1.id
   user1selectitems = []
   user2selectitems = []
   for item in Item.objects.filter(in_trades=trade):
