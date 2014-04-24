@@ -77,6 +77,8 @@
       {% endif %}
     </div>
   </div>
+  {% empty %}
+  <p>No questions asked so far</p>
   {% endfor %}
 
   {% if not is_owner %}
