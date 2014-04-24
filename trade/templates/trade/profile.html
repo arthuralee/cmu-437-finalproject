@@ -49,17 +49,7 @@
 <h3>traded items</h3>
 <ul class="item-list">
   {% for item in deaditems %}
-    <li class="panel panel-default">
-      <div class="panel-body">
-        {% if item.image %}
-          <img src="{% url 'image' item.id %}">
-        {% endif %}
-        <div class="item-info">
-          <div class="item-desc"><a href="/item/{{item.id}}">{{item.desc}}</a></div>
-          Posted: {{item.date_time}}
-        </div>
-      </div>
-    </li>
+    {% include "trade/item_list_single.html" %}
   {% endfor %}
 </ul>
 {% endif %}
