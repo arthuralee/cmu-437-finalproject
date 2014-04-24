@@ -8,19 +8,19 @@ from django.contrib.auth.decorators import login_required
 
 # Used to create and manually log in a user
 from django.contrib.auth.models import User
+from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth import login, authenticate
 from django.core.mail import send_mail
-from django.contrib.auth.tokens import default_token_generator
+from django.core import serializers
+from django.db.models import Q
 from django.utils.datastructures import MultiValueDictKeyError
 
 from mimetypes import guess_type
 from django.http import HttpResponse, Http404
 
 from trade.models import *
-import re
-from django.core import serializers
-from django.db.models import Q
 import json
+import re
 
 def bitch(request):
   for trade in Trade.objects.all():
@@ -28,6 +28,7 @@ def bitch(request):
   return redirect('/')
 
 def bitch2(request):
+  raise Http404
   for item in Item.objects.all():
     item.in_trades = []
     item.acc_trade = None
@@ -140,7 +141,7 @@ def delete_item(request, id):
   errors = []
   # Deletes item if the logged-in user has an item matching the id
   try:
-    item_to_delete = Item.objects.get(id=id, user=request.user)
+    item_to_delete = get_object_or_404(Item, id=id, user=request.user)
     item_to_delete.delete()
   except ObjectDoesNotExist:
     errors.append('The item does not exist.')
@@ -148,7 +149,7 @@ def delete_item(request, id):
   return redirect('/manage')
 
 def item_single(request, id):
-  item = Item.objects.get(id=id)
+  item = get_object_or_404(Item, id=id)
   owner = UserData.objects.get(user=item.user)
   is_owner = item.user == request.user
   owner = {
@@ -169,7 +170,7 @@ def item_single(request, id):
 
 def item_question(request, id):
   if request.method == 'POST':
-    item = Item.objects.get(id=id)
+    item = get_object_or_404(Item, id=id)
     q = ItemQuestion(user=request.user, item=item, q=request.POST['q'])
     q.save()
     return redirect('/item/' + str(id))
@@ -177,7 +178,7 @@ def item_question(request, id):
 
 def item_answer(request, id):
   if request.method == 'POST':
-    q = ItemQuestion.objects.get(item=Item.objects.get(id=id))
+    q = ItemQuestion.objects.get(item=get_object_or_404(Item, id=id))
     q.a = request.POST['answer']
     q.save()
     return redirect('/item/' + str(id))
@@ -190,7 +191,7 @@ def item_answer(request, id):
 @login_required
 def trade_accept(request, id):
   try:
-    trade = Trade.objects.get(id=id)
+    trade = get_object_or_404(Trade, id=id)
     trade.status = 1
     for item in Item.objects.filter(in_trades=trade):
       item.status = -2
@@ -204,7 +205,7 @@ def trade_accept(request, id):
 @login_required
 def trade_cancel(request, id):
   try:
-    trade = Trade.objects.get(id=id)
+    trade = get_object_or_404(Trade, id=id)
     trade.status = -2
     for item in Item.objects.filter(in_trades=trade):
       if item.acc_trade == trade.id:
@@ -223,13 +224,13 @@ def trade_received(request, id):
     comments = request.POST['comments']
     rating = {'positive': 1, 'neutral':0, 'negative':-1}[request.POST['rating']]
 
-    trade = Trade.objects.get(id=id)
+    trade = get_object_or_404(Trade, id=id)
     rating_user = trade.user2 if request.user == trade.user1 else trade.user1
 
     review = UserReview(reviewer=request.user, reviewee=rating_user,rating=rating,body=request.POST['comments'])
     review.save()
 
-    rating_userdata = UserData.objects.get(user=rating_user)
+    rating_userdata = get_object_or_404(UserData, user=rating_user)
     rating_userdata.rep += rating
     rating_userdata.save()
 
@@ -304,18 +305,17 @@ def trade_new_get(request):
 
 def trade_new_post(request):
   # create trade, confirm trade
-  user2 = User.objects.get(id=request.POST['user2'])
-  newtrade = Trade(user1=request.user, user2=user2)
+  user2 = get_object_or_404(User, id=request.POST['user2'])
+  newtrade = get_object_or_404(Trade, user1=request.user, user2=user2)
   newtrade.status = 0
   newtrade.save()
-
   return trade_confirm(request, str(newtrade.id))
 
 @login_required
 def trade_confirm(request, id):
-  trade = Trade.objects.get(id=id)
+  trade = get_object_or_404(Trade, id=id)
   cur1 = request.user.id == trade.user1.id
-  def getItem(item_id): return Item.objects.get(id=item_id)
+  def getItem(item_id): return get_object_or_404(Item, id=item_id)
 
   if 'user1selectitems' in request.POST:
     user1selectitems = map(getItem, request.POST.getlist('user1selectitems'))
@@ -341,7 +341,7 @@ def trade_confirm(request, id):
 
 @login_required
 def trade_view(request, id):
-  trade = Trade.objects.get(id=id)
+  trade = get_object_or_404(Trade, id=id)
   cur1 = request.user.id == trade.user1.id
   user1selectitems = []
   user2selectitems = []
@@ -365,12 +365,12 @@ def trade_view(request, id):
 
 def trade_message(request, id):
   result = {}
-  trade = Trade.objects.get(id=id)
+  trade = get_object_or_404(Trade, id=id)
   if request.method == 'GET':
     msgs = TradeMsg.objects.filter(trade=trade).order_by('date')
     result = list(msgs.values('user', 'body'))
     for v in result:
-      user = User.objects.get(id=v['user'])
+      user = get_object_or_404(User, id=v['user'])
       v['username'] = user.username
   elif request.method == 'POST':
     msg_body = request.POST['body']
