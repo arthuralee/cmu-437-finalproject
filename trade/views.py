@@ -28,7 +28,6 @@ def bitch(request):
   return redirect('/')
 
 def bitch2(request):
-  raise Http404
   for item in Item.objects.all():
     item.in_trades = []
     item.acc_trade = None
@@ -308,7 +307,7 @@ def trade_new_get(request):
 def trade_new_post(request):
   # create trade, confirm trade
   user2 = get_object_or_404(User, id=request.POST['user2'])
-  newtrade = get_object_or_404(Trade, user1=request.user, user2=user2)
+  newtrade = Trade(user1=request.user, user2=user2)
   newtrade.status = 0
   newtrade.save()
   return trade_confirm(request, str(newtrade.id))

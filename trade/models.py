@@ -57,4 +57,4 @@ class UserReview(models.Model):
   reviewee = models.ForeignKey(User, related_name='reviewee')
   rating = models.IntegerField()
   body = models.CharField(max_length=1000)
-  date_time = models.DateTimeField(auto_now_add=True)
+  date_time = models.DateTimeField(auto_now_add=True, null=True)
