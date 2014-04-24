@@ -140,12 +140,8 @@ def get_user_image(request, username):
 def delete_item(request, id):
   errors = []
   # Deletes item if the logged-in user has an item matching the id
-  try:
-    item_to_delete = get_object_or_404(Item, id=id, user=request.user)
-    item_to_delete.delete()
-  except ObjectDoesNotExist:
-    errors.append('The item does not exist.')
-
+  item_to_delete = get_object_or_404(Item, id=id, user=request.user)
+  item_to_delete.delete()
   return redirect('/manage')
 
 def item_single(request, id):
