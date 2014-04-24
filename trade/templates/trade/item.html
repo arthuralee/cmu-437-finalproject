@@ -29,22 +29,22 @@
       <h4>Status</h4>
       {% if user.id == item.user.id %}
         {% if item.status < 0 %}
-          This item was part of <a href="/trade/{{item.acc_trade.id}}">Trade {{item.acc_trade.id}}</a>
+          This item was traded away in <a href="/trade/{{item.acc_trade.id}}">Trade #{{item.acc_trade.id}}</a>
         {% else %}
           This item is currently in the following trades: <br>
           {% for trade in trades %}
-            <a href="/trade/view/{{trade.id}}">Trade {{trade.id}}</a> <br>
+            <a href="/trade/{{trade.id}}">Trade #{{trade.id}}</a> <br>
           {% empty %}
             None
           {% endfor %}
         {% endif %}
       {% else %}
         {% if item.status == 0 %}
-          This item is currently in {{trades|length}} unaccepted trade{{trades|pluralize}}
+          Currently in {{trades|length}} pending trade{{trades|pluralize}}
         {% elif item.status > 0 %}
-          This item is currently in {{trades|length}} trade{{trades|pluralize}}. This item is in a trade pending shipping.
+          Currently in {{trades|length}} accepted trade{{trades|pluralize}}.
         {% else %}
-          This item has already been traded.
+          This item has already been traded
         {% endif %}
       {% endif %}
     </div>
