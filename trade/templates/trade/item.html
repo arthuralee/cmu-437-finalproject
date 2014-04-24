@@ -28,15 +28,15 @@
       <br><br>
       <h4>Status</h4>
       {% if user.id == item.user.id %}
-        This item is currently in the following trades: <br>
-        {% for trade in trades %}
-          <a href="/trade/view/{{trade.id}}">Trade {{trade.id}}</a> <br>
-        {% empty %}
-          None
-        {% endfor %}
-
         {% if item.status < 0 %}
-          This item was part of <a href="/trade/view/{{trade_id}}">Trade {{in_trades|first}}</a>
+          This item was part of <a href="/trade/{{item.acc_trade.id}}">Trade {{item.acc_trade.id}}</a>
+        {% else %}
+          This item is currently in the following trades: <br>
+          {% for trade in trades %}
+            <a href="/trade/view/{{trade.id}}">Trade {{trade.id}}</a> <br>
+          {% empty %}
+            None
+          {% endfor %}
         {% endif %}
       {% else %}
         {% if item.status == 0 %}
