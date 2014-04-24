@@ -31,7 +31,7 @@ class Item(models.Model):
   date_time = models.DateTimeField(auto_now=True)
   image = models.ImageField(upload_to="items", blank=True)
   in_trades = models.ManyToManyField(Trade, blank=True)
-  acc_trade = models.ForeignKey(Trade, blank=True, null=True, related_name="acc_trade")
+  acc_trade = models.ForeignKey(Trade, blank=True, null=True, on_delete=models.SET_NULL, related_name="acc_trade")
   status = models.IntegerField(default=0)
   # < 0 : dead
   # == 0: available

@@ -30,7 +30,8 @@ def bitch(request):
 def bitch2(request):
   for item in Item.objects.all():
     item.in_trades = []
-    item.acc_trade = 0
+    item.acc_trade = None
+    item.status = 0
     item.save()
   return redirect('/')
 
