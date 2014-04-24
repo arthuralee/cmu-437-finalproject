@@ -37,6 +37,33 @@ def bitch2(request):
 
 def home(request):
   context = {}
+  if request.user.is_authenticated():
+    newitems = Item.objects.filter(status__gte=0).order_by('-date_time')[:4]
+    context['newitems'] = newitems
+
+
+    trades = Trade.objects.filter(Q(user1=request.user) | Q(user2=request.user))
+    notaccepted = []
+    havereceived = []
+    for trade in trades:
+      # 1 if user == user1, 0 ow
+      cur1 = request.user.id == trade.user1.id
+
+      if trade.status == 0 and not cur1:
+        notaccepted.append(trade)
+      elif trade.status == 1:
+        havereceived.append(trade)
+      elif trade.status == 2 and not cur1:
+        havereceived.append(trade) 
+      elif trade.status == 3 and cur1:
+        havereceived.append(trade)
+
+    notaccepted.reverse()
+    havereceived.reverse()
+
+    context['notaccepted_trades'] = notaccepted
+    context['havereceived_trades'] = havereceived
+
   return render(request, 'trade/home.html', context)
 
 def search(request):
@@ -408,6 +435,7 @@ def my_trades(request):
       if cur1: accepted.append(trade)
       else: notaccepted.append(trade) 
     elif trade.status == 1:
+      havereceived.append(trade)
       havenotreceived.append(trade)
     elif trade.status == 2:
       if not cur1: havereceived.append(trade)

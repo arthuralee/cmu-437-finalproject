@@ -31,11 +31,11 @@ You have successfully created your trade! Here it is:
         {% if trade.status == 0 %}
           PENDING ACCEPTANCE FROM {{trade.user2.username}}
         {% elif trade.status == 1 %}
-          PENDING SHIPMENT
+          PENDING CONFIRMATION FROM BOTH PARTIES
         {% elif trade.status == 2 %}
-          PENDING SHIPMENT FROM {{trade.user2.username}}
+          PENDING CONFIRMATION FROM {{trade.user2.username}}
         {% elif trade.status == 3 %}
-          PENDING SHIPMENT FROM {{trade.user1.username}}
+          PENDING CONFIRMATION FROM {{trade.user1.username}}
         {% endif %}
         <br>
         {% if trade.status == 2 %}
