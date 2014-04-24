@@ -40,9 +40,9 @@
         {% endif %}
       {% else %}
         {% if item.status == 0 %}
-          Currently in {{trades|length}} pending trade{{trades|pluralize}}
+          Currently in {{trades|length}} pending trade{{trades|length |pluralize}}
         {% elif item.status > 0 %}
-          Currently in {{trades|length}} accepted trade{{trades|pluralize}}.
+          Currently in {{trades|length}} accepted trade{{trades|length |pluralize}}.
         {% else %}
           This item has already been traded
         {% endif %}
