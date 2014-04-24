@@ -32,7 +32,7 @@
   <div class="col-md-6">
     <div class="panel panel-default">
       <div class="panel-heading">
-        <h3><img src="/image/user/{{user1.username}}" width="40" height="40" /> {{user1.username}}</h3>
+        <h3><img src="/image/user/{{user1.username}}" width="40" height="40" /> <a href="/user/{{trade.user1.username}}">{{user1.username}}</a></h3>
       </div>
       <ul class="item-list panel-body">
         <!-- these items are selected -->
@@ -55,7 +55,7 @@
   <div class="col-md-6">
     <div class="panel panel-default">
       <div class="panel-heading">
-        <h3><img src="/image/user/{{user2.username}}" width="40" height="40" /> {{user2.username}}</h3>
+        <h3><img src="/image/user/{{user2.username}}" width="40" height="40" /> <a href="/user/{{trade.user2.username}}">{{user2.username}}</a></h3>
       </div>
       <ul class="item-list">
         {% for item in user2selectitems %}

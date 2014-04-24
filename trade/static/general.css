@@ -48,6 +48,25 @@
   margin-right: 10px;
 }
 
+#chat {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+#chat ul {
+  height: 150px;
+  overflow: scroll;
+  list-style-type: none;
+  padding: 0;
+}
+#chat ul li span {
+  font-weight: bold;
+}
+#chat input {
+  display: block;
+  width: 100%;
+}
+
 
 
 

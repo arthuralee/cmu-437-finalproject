@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
+from django.utils.html import escape
 
 # Decorator to use built-in authentication system
 from django.contrib.auth.decorators import login_required
@@ -403,7 +404,9 @@ def trade_message(request, id):
       user = User.objects.get(id=v['user'])
       v['username'] = user.username
   elif request.method == 'POST':
-    msg = TradeMsg(user=request.user, trade=trade, body=request.POST['body'])
+    msg_body = request.POST['body']
+    msg_body = escape(msg_body)
+    msg = TradeMsg(user=request.user, trade=trade, body=msg_body)
     msg.save()
     return redirect('/trade/' + str(id))
 
