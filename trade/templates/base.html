@@ -45,7 +45,7 @@
           {% if user.is_authenticated %}
             <li{%if nav.profile%} class="active"{%endif%}><a href="/user/{{user.username}}"><span class="glyphicon glyphicon-user"></span>Profile</a></li>
             <li{%if nav.catalog%} class="active"{%endif%}><a href="/manage"><span class="glyphicon glyphicon-th"></span>My catalog</a></li>
-            <li{%if nav.trade%} class="active"{%endif%}><a href="/trade"><span class="glyphicon glyphicon-sort"></span>My Trades</a></li>
+            <li{%if nav.trade%} class="active"{%endif%}><a href="/trade"><span class="glyphicon glyphicon-sort"></span>My trades</a></li>
           {% else %}
             <li{%if nav.login%} class="active"{%endif%}><a href="/login"><span class="glyphicon glyphicon-log-in"></span>Login</a></li>
             <li{%if nav.register%} class="active"{%endif%}><a href="/register"><span class="glyphicon glyphicon-edit"></span>Register</a></li>
