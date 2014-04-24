@@ -54,7 +54,7 @@ You have successfully created your trade! Here it is:
     {% if trade.status > 0 %}
       {% if not received %}
         Have you received your items yet? Click if you have
-        <a class="btn btn-primary" href="/trade/{{trade.id}}/received">HERE</a> 
+        <a class="btn btn-primary" data-toggle="modal" data-target="#ratingModal">HERE</a>
       {% endif %} <br>
 
       {% if trade.status == 2 %}
@@ -109,6 +109,50 @@ You have successfully created your trade! Here it is:
           {% include "trade/item_list_single.html" %}
         {% endfor %}
       </ul>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="ratingModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myModalLabel">Trade feedback</h4>
+      </div>
+      <form action="/trade/{{trade.id}}/received" method="post" enctype="multipart/form-data">
+      <div class="modal-body">
+        <p>Please leave feedback for the trade. This feedback will affect the other party's reputation.</p>
+        <div class="form-group">
+          <label for="rating">How would you rate your experience?</label>
+          <div class="radio">
+            <label>
+              <input type="radio" name="rating" value="positive" required> Positive
+            </label>
+          </div>
+          <div class="radio">
+            <label>
+              <input type="radio" name="rating" value="neutral" required> Neutral
+            </label>
+          </div>
+          <div class="radio">
+            <label>
+              <input type="radio" name="rating" value="negative" required> Negative
+            </label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="comments">Additional comments</label>
+          <input type="text" class="form-control" name="comments" />
+        </div>
+
+        {% csrf_token %}
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">save &amp; close trade</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">cancel</button>
+      </div>
+      </form>
     </div>
   </div>
 </div>

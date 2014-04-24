@@ -199,7 +199,7 @@ def trade_accept(request, id):
     trade.save()
   except ObjectDoesNotExist:
     pass
-  return redirect('/trade/view/'+str(id))
+  return redirect('/trade/'+str(id))
 
 @login_required
 def trade_cancel(request, id):
@@ -220,7 +220,19 @@ def trade_cancel(request, id):
 @login_required
 def trade_received(request, id):
   try:
+    comments = request.POST['comments']
+    rating = {'positive': 1, 'neutral':0, 'negative':-1}[request.POST['rating']]
+
     trade = Trade.objects.get(id=id)
+    rating_user = trade.user2 if request.user == trade.user1 else trade.user1
+
+    review = UserReview(reviewer=request.user, reviewee=rating_user,rating=rating,body=request.POST['comments'])
+    review.save()
+
+    rating_userdata = UserData.objects.get(user=rating_user)
+    rating_userdata.rep += rating
+    rating_userdata.save()
+
     if (trade.status == 2) or (trade.status == 3):
       # trade complete
       trade.status = -1
@@ -232,7 +244,7 @@ def trade_received(request, id):
     trade.save()
   except ObjectDoesNotExist:
     pass
-  return redirect('/trade/view/'+str(id))
+  return redirect('/trade/'+str(id))
 
 @login_required
 def trade_new(request):
