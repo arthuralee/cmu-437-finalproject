@@ -31,7 +31,7 @@
         {% if item.status < 0 %}
           This item was traded away in <a href="/trade/{{item.acc_trade.id}}">Trade #{{item.acc_trade.id}}</a>
         {% else %}
-          This item is currently in the following trades: <br>
+          This item is currently in the following active trades: <br>
           {% for trade in trades %}
             <a href="/trade/{{trade.id}}">Trade #{{trade.id}}</a> <br>
           {% empty %}

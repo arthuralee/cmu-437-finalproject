@@ -43,7 +43,6 @@ def search(request):
   # to be improved
   if 'q' not in request.GET:
     return redirect('/')
-
   criteria = Q(desc__icontains=request.GET['q']) | Q(longdesc__icontains=request.GET['q'])
   if (request.GET['q'].isdigit()):
     criteria |= Q(id=request.GET['q'])
@@ -160,11 +159,12 @@ def item_single(request, id):
   }
   trades = []
   for trade in item.in_trades.all():
-    trades.append(trade)
+    if trade.status == 0 :
+      trades.append(trade)
   trades.reverse()
   questions = ItemQuestion.objects.filter(item=item)
   return render(request, 'trade/item.html', {'item': item,
-                                             'trades': trades,
+                                             'activetrades': trades,
                                              'owner': owner, 
                                              'questions': questions,
                                              'is_owner': is_owner})
@@ -193,6 +193,7 @@ def item_answer(request, id):
 def trade_accept(request, id):
   try:
     trade = get_object_or_404(Trade, id=id)
+    if trade.user2.id != request.user.id: raise Http404
     trade.status = 1
     for item in Item.objects.filter(in_trades=trade):
       item.status = -2
@@ -207,9 +208,11 @@ def trade_accept(request, id):
 def trade_cancel(request, id):
   try:
     trade = get_object_or_404(Trade, id=id)
+    if not((trade.user2.id == request.user.id) or (trade.user1.id == request.user.id)): 
+      raise Http404
     trade.status = -2
     for item in Item.objects.filter(in_trades=trade):
-      if item.acc_trade == trade.id:
+      if item.acc_trade == trade:
         item.status = 0
         item.acc_trade = None
         item.save()
@@ -222,10 +225,15 @@ def trade_cancel(request, id):
 @login_required
 def trade_received(request, id):
   try:
+    if 'comments' not in request.POST: raise Http404
     comments = request.POST['comments']
     rating = {'positive': 1, 'neutral':0, 'negative':-1}[request.POST['rating']]
 
     trade = get_object_or_404(Trade, id=id)
+    if (not((trade.user2.id == request.user.id) or (trade.user1.id == request.user.id)) or
+       (trade.status <= 0)): 
+      raise Http404
+
     rating_user = trade.user2 if request.user == trade.user1 else trade.user1
 
     review = UserReview(reviewer=request.user, reviewee=rating_user,rating=rating,body=request.POST['comments'])
@@ -244,8 +252,8 @@ def trade_received(request, id):
       if cur1: trade.status = 2
       else: trade.status = 3
     trade.save()
-  except ObjectDoesNotExist:
-    pass
+  except:
+    raise Http404
   return redirect('/trade/'+str(id))
 
 @login_required
@@ -265,6 +273,8 @@ def trade_new_get(request):
 
   if 'from' in request.GET:
     from_trade = get_object_or_404(Trade, id=request.GET['from'])
+    if not((from_trade.user2.id == request.user.id) or (from_trade.user1.id == request.user.id)): 
+      raise Http404
     from_trade_items = list(Item.objects.filter(in_trades=from_trade))
     context['from'] = from_trade.id
 
@@ -315,6 +325,8 @@ def trade_new_post(request):
 @login_required
 def trade_confirm(request, id):
   trade = get_object_or_404(Trade, id=id)
+  if not((trade.user2.id == request.user.id) or (trade.user1.id == request.user.id)): 
+    raise Http404
   cur1 = request.user.id == trade.user1.id
   def getItem(item_id): return get_object_or_404(Item, id=item_id)
 
@@ -343,6 +355,8 @@ def trade_confirm(request, id):
 @login_required
 def trade_view(request, id):
   trade = get_object_or_404(Trade, id=id)
+  if not((trade.user2.id == request.user.id) or (trade.user1.id == request.user.id)): 
+    raise Http404
   cur1 = request.user.id == trade.user1.id
   user1selectitems = []
   user2selectitems = []
