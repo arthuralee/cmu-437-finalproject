@@ -45,8 +45,13 @@
           {% include "trade/item_list_single.html" with checkname="user1selectitems" attr=" " %}
         {% endfor %}
         <!-- These items arent available -->
-        {% for item in user1deaditems %}
-          {% include "trade/item_list_single.html" with checkname="user1selectitems" attr="disabled" %}
+        {% for item in user1semideaditems %}
+          {% if item.user.id == user.id %}
+            {% include "trade/item_list_single.html" with checkname="user1selectitems" attr="disabled" %}
+          {% else %}
+            CAUTION
+            {% include "trade/item_list_single.html" with checkname="user1selectitems" attr=" " %}
+          {% endif %}
         {% endfor %}
       </ul>
     </div>
@@ -68,8 +73,13 @@
         {% endfor %}
 
         <!-- These items arent available -->
-        {% for item in user1deaditems %}
-          {% include "trade/item_list_single.html" with checkname="user2selectitems" attr="disabled" %}
+        {% for item in user2semideaditems %}
+          {% if item.user.id == user.id %}
+            {% include "trade/item_list_single.html" with checkname="user2selectitems" attr="disabled" %}
+          {% else %}
+            CAUTION
+            {% include "trade/item_list_single.html" with checkname="user2selectitems" attr=" " %}
+          {% endif %}
         {% endfor %}
 
       </ul>

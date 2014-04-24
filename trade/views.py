@@ -258,10 +258,10 @@ def trade_new_get(request):
   user2 = get_object_or_404(User, username=request.GET['with'])
   user1selectitems = []
   user1restitems = []
-  user1deaditems = []
+  user1semideaditems = []
   user2selectitems = []
   user2restitems = []
-  user2deaditems = []
+  user2semideaditems = []
   items1 = Item.objects.filter(user=user1).filter(status__gte=0).order_by('-date_time')
   items2 = Item.objects.filter(user=user2).filter(status__gte=0).order_by('-date_time')
 
@@ -269,25 +269,25 @@ def trade_new_get(request):
     if item in from_trade_items:
       user1selectitems.append(item)
     else:
-      if item.status > 0:
-        user1deaditems.append(trade)
-      else: user1restitems.append(item)
+      if item.acc_trade == None:
+        user1restitems.append(item)
+      else: user1semideaditems.append(item)
   for item in items2:
     if item in from_trade_items:
       user2selectitems.append(item)
     else:
-      if item.status > 0:
-        user2deaditems.append(trade)
-      else: user2restitems.append(item)
+      if item.acc_trade == None:
+        user2restitems.append(item)
+      else: user2semideaditems.append(item)
 
   context['user1'] = user1
   context['user2'] = user2
   context['user1selectitems'] = user1selectitems
   context['user2selectitems'] = user2selectitems
-  context['user1deaditems'] = user1deaditems
+  context['user1semideaditems'] = user1semideaditems
   context['user1restitems'] = user1restitems
   context['user2restitems'] = user2restitems
-  context['user2deaditems'] = user2deaditems
+  context['user2semideaditems'] = user2semideaditems
   return render(request, 'trade/new_trade.html', context)
 
 def trade_new_post(request):
@@ -298,20 +298,6 @@ def trade_new_post(request):
   newtrade.save()
 
   return trade_confirm(request, str(newtrade.id))
-
-@login_required
-def trade_modify(request, id):
-  return
-  old_trade = Trade.objects.get(id=id)
-  new_trade = Trade(user1=old_trade.user2, 
-                    user2=old_trade.user1)
-  new_trade.save()
-  new_trade.items = old_trade.items.all()
-  new_trade.status = 0
-  new_trade.save()
-  old_trade.status = -2 # cancel old trade
-  old_trade.save()
-  return redirect('/trade/new/' + str(new_trade.id))
 
 @login_required
 def trade_confirm(request, id):
