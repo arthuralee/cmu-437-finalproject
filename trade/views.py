@@ -324,14 +324,15 @@ def trade_confirm(request, id):
   if not((trade.user2.id == request.user.id) or (trade.user1.id == request.user.id)): 
     raise Http404
   cur1 = request.user.id == trade.user1.id
-  def getItem(item_id): return get_object_or_404(Item, id=item_id)
+  def getItem1(item_id): return get_object_or_404(Item, id=item_id, user=trade.user1)
+  def getItem2(item_id): return get_object_or_404(Item, id=item_id, user=trade.user2)
 
   if 'user1selectitems' in request.POST:
-    user1selectitems = map(getItem, request.POST.getlist('user1selectitems'))
+    user1selectitems = map(getItem1, request.POST.getlist('user1selectitems'))
   else:
     user1selectitems = []
   if 'user2selectitems' in request.POST:
-    user2selectitems = map(getItem, request.POST.getlist('user2selectitems'))
+    user2selectitems = map(getItem2, request.POST.getlist('user2selectitems'))
   else:
     user2selectitems = []
 
