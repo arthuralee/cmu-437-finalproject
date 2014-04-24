@@ -89,7 +89,7 @@
   .item-list li input {
     position: absolute;
     top: 0;
-    left: 0;
+    left: 3px;
   }
   .item-list .img {
     margin: 5px auto;
