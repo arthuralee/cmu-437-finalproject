@@ -1,0 +1,11 @@
+{% load timesince_human %}
+
+<a href="/trade/{{trade.id}}" class="list-group-item">
+  Trade #{{trade.id}} &bull; 
+  {% if trade.user1.id == user.id %}
+     {{trade.user2.username}}
+  {% else %}
+    {{trade.user1.username}}
+  {% endif %} &bull;
+  {{trade.date_created|timesince_human}}
+</a>

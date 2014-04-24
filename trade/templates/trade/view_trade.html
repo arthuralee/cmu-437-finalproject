@@ -17,11 +17,72 @@
 You have successfully created your trade! Here it is:
 {% endif %}
 
-<h1>Trade #{{trade.id}}</h1>
-
 <div class="row">
-  <div class="col-md-8">
+  <div class="col-md-6">
+
+    {% if trade.status == -2 %}
+      <div class="alert alert-danger"><h1>Trade #{{trade.id}}</h1>STATUS: CANCELLED</div>
+    {% elif trade.status == -1 %}
+      <div class="alert alert-success"><h1>Trade #{{trade.id}}</h1>STATUS: COMPLETED</div>
+    {% else %}
+      <div class="alert alert-warning">
+        <h1>Trade #{{trade.id}}</h1>
+        STATUS: 
+        {% if trade.status == 0 %}
+          PENDING ACCEPTANCE FROM {{trade.user2.username}}
+        {% elif trade.status == 1 %}
+          PENDING SHIPMENT
+        {% elif trade.status == 2 %}
+          PENDING SHIPMENT FROM {{trade.user2.username}}
+        {% elif trade.status == 3 %}
+          PENDING SHIPMENT FROM {{trade.user1.username}}
+        {% endif %}
+        <br>
+        {% if trade.status == 2 %}
+          <!-- user1 received -->
+          {% if cur1 %} 
+            {{trade.user2.username}} has not received your items
+          {% else %} 
+            {{trade.user1.username}} has received your items
+          {% endif %}
+        {% elif trade.status == 3 %}
+          <!-- user2 received -->
+          {% if cur1 %} 
+            {{trade.user2.username}} has received your items
+          {% else %} 
+            {{trade.user1.username}} has not received your items
+          {% endif %}
+        {% elif trade.status == 1 %}
+          <!-- no one received -->
+          {% if cur1 %} 
+            {{trade.user2.username}} has not received your items
+          {% else %} 
+            {{trade.user1.username}} has not received your items
+          {% endif %}
+        {% endif %} 
+      </div>
+    {% endif %}
+
+    <div class="btn-group btn-group-justified">
+      {% if trade.status == 0 and not cur1 %}
+        <a href="/trade/{{trade.id}}/accept" class="btn btn-default">Accept trade</a> 
+        <a class="btn btn-default" href="/trade/new?with={{trade.user1.username}}&from={{trade.id}}">Reoffer</a> 
+      {% endif %}
+
+      {% if trade.status == 0 %}
+        <a href="/trade/{{trade.id}}/cancel" class="btn btn-default">Cancel trade</a> 
+      {% endif %}
+
+      {% if trade.status > 0 %}
+        {% if not received %}
+          <a class="btn btn-default" data-toggle="modal" data-target="#ratingModal">Mark as received</a>
+        {% endif %}
+      {% endif %}
+    </div>
+  </div>
+  <div class="col-md-6">
     <div id="chat">
+      <small>Send a message</small>
       <ul id="messages">
       </ul>
       <form method="post" action="/trade/{{id}}/message" id="chatform">
@@ -29,58 +90,6 @@ You have successfully created your trade! Here it is:
         {% csrf_token %}
       </form>
     </div>
-  </div>
-  <div class="col-md-4">
-    STATUS:   {{trade.status}}
-    {% if trade.status == -2 %} CANCELLED
-    {% elif trade.status == -1 %} COMPLETED
-    {% elif trade.status == 0 %} AWAITING ACCEPTANCE FROM {{trade.user2.username}}
-    {% elif trade.status == 1 %} ACCEPTED BY BOTH PARTIES. ITEMS IN PROGRESS
-    {% elif trade.status == 2 %} ACCEPTED, WAITING FOR {{trade.user2.username}}'s ITEMS
-    {% elif trade.status == 3 %} ACCEPTED, WAITING FOR {{trade.user1.username}}'s ITEMS
-    {% else %} ERROR
-    {% endif %}
-
-    {% if trade.status == 0 and not cur1 %}
-      <a href="/trade/{{trade.id}}/accept" class="btn btn-primary">Accept trade</a> 
-      <a class="btn btn-warning" href="/trade/new?with={{trade.user1.username}}&from={{trade.id}}">
-        Reoffer</a> 
-    {% endif %}
-
-    {% if trade.status == 0 %}
-      <a href="/trade/{{trade.id}}/cancel" class="btn btn-danger">Cancel trade</a> 
-    {% endif %}
-
-    {% if trade.status > 0 %}
-      {% if not received %}
-        Have you received your items yet? Click if you have
-        <a class="btn btn-primary" data-toggle="modal" data-target="#ratingModal">HERE</a>
-      {% endif %} <br>
-
-      {% if trade.status == 2 %}
-      <!-- user1 received -->
-        {% if cur1 %} 
-          {{trade.user2.username}} has not received your items
-        {% else %} 
-          {{trade.user1.username}} has received your items
-        {% endif %}
-      {% elif trade.status == 3 %}
-      <!-- user2 received -->
-        {% if cur1 %} 
-          {{trade.user2.username}} has received your items
-        {% else %} 
-          {{trade.user1.username}} has not received your items
-        {% endif %}
-      {% elif trade.status == 1 %}
-      <!-- no one received -->
-        {% if cur1 %} 
-          {{trade.user2.username}} has not received your items
-        {% else %} 
-          {{trade.user1.username}} has not received your items
-        {% endif %}
-      {% else %}
-      {% endif %} 
-    {% endif %}
   </div>
 </div>
 <hr>

@@ -1,8 +1,5 @@
 {% extends "base.html" %}
 
-{% block title %}Trade{% endblock %}
-
-
 {% block errors %}
   {% for error in errors %}
     <p class="alert alert-danger">
@@ -14,158 +11,103 @@
 {% block content %}
 <h1>My trades</h1>
 
-<h3>pending trades</h3>
+<h3>pending</h3>
 <div class="row">
 
   <div class="col-md-6">
-    <div class="panel panel-primary">
+    <div class="panel panel-warning">
       <div class="panel-heading">
-        <h3 class="panel-title">waiting on them</h3>
+        <h3 class="panel-title">waiting for you to accept</h3>
       </div>
-      <div class="panel-body">
-        <ul>
-          {% for trade in accepted_trades %}
-            <li>
-              {% if trade.user1.id == user.id %}
-                 <a href="/user/{{trade.user2.username}}">{{trade.user2.username}}</a>
-              {% else  %}
-                <a href="/user/{{trade.user1.username}}">{{trade.user1.username}}</a>.
-              {% endif %}
-              <a href="/trade/{{trade.id}}">View Trade</a>
-            </li>
-          {% empty %}
-            Nobody :(
-          {% endfor %}
-        </ul>
-      </div>
-    </div>
-  </div>
-  
-  <div class="col-md-6">
-    <div class="panel panel-primary">
-      <div class="panel-heading">
-        <h3 class="panel-title">waiting on you</h3>
-      </div>
-      <div class="panel-body">
-        <ul>
-          {% for trade in notaccepted_trades %}
-            <li>
-            {% if trade.user1.id == user.id %}
-               <a href="/user/{{trade.user2.username}}">{{trade.user2.username}}</a>
-            {% else  %}
-              <a href="/user/{{trade.user1.username}}">{{trade.user1.username}}</a>.
-            {% endif %}
-            <a href="/trade/{{trade.id}}">View Trade</a>
-            </li>
-          {% empty %}
-            Nobody :(
-          {% endfor %}
-        </ul>
-      </div>
-    </div>
-  </div>
-</div>
-
-<h3>trades in progress</h3>
-
-<div class="row">
-  <div class="col-md-6">
-    <div class="panel panel-success">
-      <div class="panel-heading">
-        <h3 class="panel-title">Trades that haven't received your items yet</h3>
-      </div>
-      <div class="panel-body">
-        <ul>
-         {% for trade in havenotreceived_trades %}
-            <li>
-              {% if trade.user1.id == user.id %}
-                 <a href="/user/{{trade.user2.username}}">{{trade.user2.username}}</a>
-              {% else  %}
-                <a href="/user/{{trade.user1.username}}">{{trade.user1.username}}</a>.
-              {% endif %}
-              <a href="/trade/{{trade.id}}">View Trade</a>
-            </li>
-          {% empty %}
-            Nobody :(
-          {% endfor %}
-        </ul>
-      </div>
+      <ul class="list-group">
+        {% for trade in notaccepted_trades %}
+          {% include "trade/my_trades_list_single.html" %}
+        {% empty %}
+          <em class="list-group-item">None</em>
+        {% endfor %}
+      </ul>
     </div>
   </div>
 
   <div class="col-md-6">
     <div class="panel panel-default">
       <div class="panel-heading">
-        <h3 class="panel-title">Trades that have received your items</h3>
+        <h3 class="panel-title">waiting for them to accept</h3>
       </div>
-      <div class="panel-body">
-        <ul>
-          {% for trade in havereceived_trades %}
-            <li> 
-            {% if trade.user1.id == user.id %}
-               <a href="/user/{{trade.user1.username}}">{{trade.user2.username}}</a>
-            {% else  %}
-              <a href="/user/{{user.username}}">{{user.username}}</a>.
-            {% endif %}
-            <a href="/trade/{{trade.id}}" color_name="pink">View Trade</a>
-            </li>
-          {% empty %}
-            Nobody :(
-          {% endfor %}
-        </ul>
-      </div>
+      <ul class="list-group">
+        {% for trade in accepted_trades %}
+          {% include "trade/my_trades_list_single.html" %}
+        {% empty %}
+          <em class="list-group-item">None</em>
+        {% endfor %}
+      </ul>
     </div>
   </div>
 </div>
 
-<h3>inactive trades</h3>
+<h3>in progress</h3>
+
 <div class="row">
   <div class="col-md-6">
-    <div class="panel panel-success">
+    <div class="panel panel-warning">
       <div class="panel-heading">
-        <h3 class="panel-title">Completed Trades</h3>
+        <h3 class="panel-title">you haven't received</h3>
       </div>
-      <div class="panel-body">
-        <ul>
-         {% for trade in completed_trades %}
-            <li>
-            {% if trade.user1.id == user.id %}
-               <a href="/user/{{trade.user2.username}}">{{trade.user2.username}}</a>
-            {% else  %}
-              <a href="/user/{{trade.user1.username}}">{{trade.user1.username}}</a>.
-            {% endif %}
-            <a href="/trade/{{trade.id}}">View Trade</a>
-            </li>
-          {% empty %}
-            Nobody :(
-          {% endfor %}
-
-        </ul>
-      </div>
+      <ul class="list-group">
+        {% for trade in havenotreceived_trades %}
+          {% include "trade/my_trades_list_single.html" %}
+        {% empty %}
+          <em class="list-group-item">None</em>
+        {% endfor %}
+      </ul>
     </div>
   </div>
 
   <div class="col-md-6">
     <div class="panel panel-default">
       <div class="panel-heading">
-        <h3 class="panel-title">Cancelled Trades</h3>
+        <h3 class="panel-title">they haven't received</h3>
       </div>
-      <div class="panel-body">
-        <ul>
-          {% for trade in cancelled_trades %}
-            <li> 
-            {% if trade.user1.id == user.id %}
-               <a href="/user/{{trade.user1.username}}">{{trade.user2.username}}</a>
-            {% else  %}
-              <a href="/user/{{user.username}}">{{user.username}}</a>.
-            {% endif %}
-            <a href="/trade/{{trade.id}}" color_name="pink">View Trade</a>
-            </li>
-          {% empty %}
-            Nobody :(
-          {% endfor %}
-        </ul>
+      <ul class="list-group">
+        {% for trade in havereceived_trades %}
+          {% include "trade/my_trades_list_single.html" %}
+        {% empty %}
+          <em class="list-group-item">None</em>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
+
+<h3>inactive</h3>
+<div class="row">
+  <div class="col-md-6">
+    <div class="panel panel-success">
+      <div class="panel-heading">
+        <h3 class="panel-title">completed</h3>
       </div>
+      <ul class="list-group">
+        {% for trade in completed_trades %}
+          {% include "trade/my_trades_list_single.html" %}
+        {% empty %}
+          <em class="list-group-item">None</em>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">cancelled</h3>
+      </div>
+      <ul class="list-group">
+        {% for trade in cancelled_trades %}
+          {% include "trade/my_trades_list_single.html" %}
+        {% empty %}
+          <em class="list-group-item">None</em>
+        {% endfor %}
+      </ul>
     </div>
   </div>
 </div>
