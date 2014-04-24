@@ -231,6 +231,7 @@ def trade_new(request):
     return trade_new_post(request)
 
 def trade_new_get(request):
+  context = {}
   # Sets up list of just the logged-in user's (request.user's) items
   if 'with' not in request.GET or not request.GET['with']:
     return redirect('/')
@@ -240,6 +241,7 @@ def trade_new_get(request):
   if 'from' in request.GET:
     from_trade = get_object_or_404(Trade, id=request.GET['from'])
     from_trade_items = list(Item.objects.filter(in_trades=from_trade))
+    context['from'] = from_trade.id
 
   user1 = request.user
   user2 = get_object_or_404(User, username=request.GET['with'])
@@ -266,18 +268,16 @@ def trade_new_get(request):
       if item.status > 0:
         user2deaditems.append(trade)
       else: user2restitems.append(item)
-  return render(request, 'trade/new_trade.html', 
-    {
-      'user1': user1,
-      'user2': user2, 
-      'user1selectitems': user1selectitems,
-      'user2selectitems': user2selectitems,
-      'user1deaditems': user1deaditems,
-      'user1restitems': user1restitems,
-      'user2restitems': user2restitems,
-      'user2deaditems': user2deaditems,
-      'from': from_trade.id
-    })
+
+  context['user1'] = user1
+  context['user2'] = user2
+  context['user1selectitems'] = user1selectitems
+  context['user2selectitems'] = user2selectitems
+  context['user1deaditems'] = user1deaditems
+  context['user1restitems'] = user1restitems
+  context['user2restitems'] = user2restitems
+  context['user2deaditems'] = user2deaditems
+  return render(request, 'trade/new_trade.html', context)
 
 def trade_new_post(request):
   # create trade, confirm trade
