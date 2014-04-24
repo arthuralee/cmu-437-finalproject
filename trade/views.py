@@ -220,36 +220,33 @@ def trade_cancel(request, id):
 
 @login_required
 def trade_received(request, id):
-  try:
-    if 'comments' not in request.POST: raise Http404
-    comments = request.POST['comments']
-    rating = {'positive': 1, 'neutral':0, 'negative':-1}[request.POST['rating']]
+  if 'comments' not in request.POST: raise Http404
+  comments = request.POST['comments']
+  rating = {'positive': 1, 'neutral':0, 'negative':-1}[request.POST['rating']]
 
-    trade = get_object_or_404(Trade, id=id)
-    if (not((trade.user2.id == request.user.id) or (trade.user1.id == request.user.id)) or
-       (trade.status <= 0)): 
-      raise Http404
-
-    rating_user = trade.user2 if request.user == trade.user1 else trade.user1
-
-    review = UserReview(reviewer=request.user, reviewee=rating_user,rating=rating,body=request.POST['comments'])
-    review.save()
-
-    rating_userdata = get_object_or_404(UserData, user=rating_user)
-    rating_userdata.rep += rating
-    rating_userdata.save()
-
-    if (trade.status == 2) or (trade.status == 3):
-      # trade complete
-      trade.status = -1
-    elif trade.status == 1:
-      cur1 = 0
-      if request.user.id == trade.user1.id: cur1 = 1
-      if cur1: trade.status = 2
-      else: trade.status = 3
-    trade.save()
-  except:
+  trade = get_object_or_404(Trade, id=id)
+  if (not((trade.user2.id == request.user.id) or (trade.user1.id == request.user.id)) or
+     (trade.status <= 0)): 
     raise Http404
+
+  rating_user = trade.user2 if request.user == trade.user1 else trade.user1
+
+  review = UserReview(reviewer=request.user, reviewee=rating_user,rating=rating,body=request.POST['comments'])
+  review.save()
+
+  rating_userdata = get_object_or_404(UserData, user=rating_user)
+  rating_userdata.rep += rating
+  rating_userdata.save()
+
+  if (trade.status == 2) or (trade.status == 3):
+    # trade complete
+    trade.status = -1
+  elif trade.status == 1:
+    cur1 = 0
+    if request.user.id == trade.user1.id: cur1 = 1
+    if cur1: trade.status = 2
+    else: trade.status = 3
+  trade.save()
   return redirect('/trade/'+str(id))
 
 @login_required
