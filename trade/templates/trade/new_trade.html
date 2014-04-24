@@ -47,9 +47,9 @@
         <!-- These items arent available -->
         {% for item in user1semideaditems %}
           {% if item.user.id == user.id %}
-            {% include "trade/item_list_single.html" with checkname="user1selectitems" attr="disabled" %}
+            {% include "trade/item_list_single.html" with checkname="user1selectitems" attr="disabled" status="pendingyou" %}
           {% else %}
-            {% include "trade/item_list_single.html" with checkname="user1selectitems" attr=" " caution=True %}
+            {% include "trade/item_list_single.html" with checkname="user1selectitems" attr=" " caution=True status="pending" %}
           {% endif %}
         {% endfor %}
       </ul>
@@ -74,9 +74,9 @@
         <!-- These items arent available -->
         {% for item in user2semideaditems %}
           {% if item.user.id == user.id %}
-            {% include "trade/item_list_single.html" with checkname="user2selectitems" attr="disabled" %}
+            {% include "trade/item_list_single.html" with checkname="user2selectitems" attr="disabled" status="pendingyou" %}
           {% else %}
-            {% include "trade/item_list_single.html" with checkname="user2selectitems" attr=" " caution=True %}
+            {% include "trade/item_list_single.html" with checkname="user2selectitems" attr=" " status="pending" %}
           {% endif %}
         {% endfor %}
 

@@ -18,7 +18,9 @@
   {% if attr %}
     <input type="checkbox" {{attr}} name="{{checkname}}" value="{{item.id}}">
   {% endif %}
-  {% if caution %}
+  {% if status == "pending" %}
     <div class="item-caution" data-toggle="tooltip" title="This item is in another pending trade"><span class="glyphicon glyphicon-exclamation-sign"></span></div>
+  {% elif status == "pendingyou" %}
+    <div class="item-caution red" data-toggle="tooltip" title="You added this item in another pending trade"><span class="glyphicon glyphicon-exclamation-sign"></span></div>
   {% endif %}
 </li>
