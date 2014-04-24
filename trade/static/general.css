@@ -106,6 +106,13 @@
     font-size: 14px;
     color: black;
   }
+  .item-list li .item-caution {
+    position: absolute;
+    top: 0;
+    right: 3px;
+    font-size: 20px;
+    color: #aa0000;
+  }
 
 
 .blue{

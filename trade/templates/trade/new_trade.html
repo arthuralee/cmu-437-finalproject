@@ -49,8 +49,7 @@
           {% if item.user.id == user.id %}
             {% include "trade/item_list_single.html" with checkname="user1selectitems" attr="disabled" %}
           {% else %}
-            CAUTION
-            {% include "trade/item_list_single.html" with checkname="user1selectitems" attr=" " %}
+            {% include "trade/item_list_single.html" with checkname="user1selectitems" attr=" " caution=True %}
           {% endif %}
         {% endfor %}
       </ul>
@@ -77,8 +76,7 @@
           {% if item.user.id == user.id %}
             {% include "trade/item_list_single.html" with checkname="user2selectitems" attr="disabled" %}
           {% else %}
-            CAUTION
-            {% include "trade/item_list_single.html" with checkname="user2selectitems" attr=" " %}
+            {% include "trade/item_list_single.html" with checkname="user2selectitems" attr=" " caution=True %}
           {% endif %}
         {% endfor %}
 
@@ -91,4 +89,7 @@
   {% csrf_token %}
 </form>
 
+<script>
+  $('.item-caution').tooltip();
+</script>
 {% endblock %}
