@@ -54,7 +54,7 @@
         <h3 class="panel-title">you haven't received</h3>
       </div>
       <ul class="list-group">
-        {% for trade in havenotreceived_trades %}
+        {% for trade in havereceived_trades %}
           {% include "trade/my_trades_list_single.html" %}
         {% empty %}
           <em class="list-group-item">None</em>
@@ -69,7 +69,7 @@
         <h3 class="panel-title">they haven't received</h3>
       </div>
       <ul class="list-group">
-        {% for trade in havereceived_trades %}
+        {% for trade in havenotreceived_trades %}
           {% include "trade/my_trades_list_single.html" %}
         {% empty %}
           <em class="list-group-item">None</em>
