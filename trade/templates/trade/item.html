@@ -16,18 +16,18 @@
 
   <div class="row">
     <div class="col-md-6">
-      {% if item.image %}
-        <h4>Image</h4>
-        <img src="{% url 'image' item.id %}">
-      {% endif %}
+      <h4>Image</h4>
+      <img src="{% url 'image' item.id %}">
     </div>
     <div class="col-md-6">
+      <h4>Reference</h4>
+      Item #{{item.id}}
+      <br><br>
       <h4>Owner</h4>
-        <a href="/user/{{item.user.username}}">{{item.user.username}}</a> ({{item.user.rep}})
+        <a href="/user/{{item.user.username}}">{{owner.username}}</a> ({{owner.rep}}) - {{owner.loc}}
       <br><br>
       <h4>Status</h4>
       {% if user.id == item.user.id %}
-        Don't worry, all the information is available only for you, {{user.first_name}}<br>
         This item is currently in the following trades: <br>
         {% for trade in trades %}
           <a href="/trade/view/{{trade.id}}">Trade {{trade.id}}</a> <br>
@@ -40,16 +40,18 @@
         {% endif %}
       {% else %}
         {% if item.status == 0 %}
-          This item is currently in {{trades|length}} trade(s), not yet accepted by {{item.user.username}}
+          This item is currently in {{trades|length}} unaccepted trade{{trades|pluralize}}
         {% elif item.status > 0 %}
-          This item is currently in {{trades|length}} trade(s) in progress, one of which is accepted by {{item.user.username}}
+          This item is currently in {{trades|length}} trade{{trades|pluralize}}. This item is in a trade pending shipping.
         {% else %}
-          This item is no longer available for trading
+          This item has already been traded.
         {% endif %}
       {% endif %}
     </div>
 
   </div>
+
+  <hr>
 
   <h4>Description</h4>
   {{item.longdesc}}

@@ -27,15 +27,10 @@ def bitch(request):
   return redirect('/')
 
 def bitch2(request):
-  for hi in ItemData.objects.all():
-    hi.delete()
   for item in Item.objects.all():
-    new = ItemData(item=item)
-    new.save()
-  for trade in ItemData.objects.all():
-    trade.acc_trade = 0
-    trade.in_trades = []
-    trade.save()
+    item.in_trades = []
+    item.acc_trade = 0
+    item.save()
   return redirect('/')
 
 def home(request):
@@ -47,9 +42,13 @@ def search(request):
   if 'q' not in request.GET:
     return redirect('/')
 
-  results = Item.objects.filter(Q(desc__icontains=request.GET['q']) | Q(longdesc__icontains=request.GET['q']))
+  criteria = Q(desc__icontains=request.GET['q']) | Q(longdesc__icontains=request.GET['q'])
+  if (request.GET['q'].isdigit()):
+    criteria |= Q(id=request.GET['q'])
+  results = Item.objects.filter(criteria)
   results = results.filter(status__gte=0)
-  return render(request, 'trade/search.html', {'items': results, 'q': request.GET['q']})
+  results_users = User.objects.filter(username__icontains=request.GET['q'])
+  return render(request, 'trade/search.html', {'items': results, 'users': results_users, 'q': request.GET['q']})
 
 @login_required
 def manage(request):
@@ -110,16 +109,17 @@ def add_item(request):
   if not 'desc' in request.POST or not request.POST['desc']:
     errors.append('You must enter an description')
   else:
-    new_item = Item(desc=request.POST['desc'], user=request.user)
+    new_item = Item(desc=request.POST['desc'], longdesc=request.POST['longdesc'], user=request.user)
     if 'image' in request.FILES:
       new_item.image = request.FILES['image']
     new_item.save()
   return redirect('/manage')
 
-def get_image(request, id):
+def get_item_image(request, id):
   item = get_object_or_404(Item, id=id)
   if not item.image:
-    raise Http404
+    image_data = open(settings.MEDIA_ROOT + "items/no-image.jpg", "rb").read()
+    return HttpResponse(image_data, mimetype="image/jpeg")
   content_type = guess_type(item.image.name)
   return HttpResponse(item.image, mimetype=content_type)
 
@@ -129,8 +129,7 @@ def get_user_image(request, username):
   userdata = UserData.objects.get(user=user)
   if not userdata.image:
     image_data = open(settings.MEDIA_ROOT + "users/avatar-blank.jpg", "rb").read()
-    return HttpResponse(image_data, mimetype="image/png")
-    raise Http404
+    return HttpResponse(image_data, mimetype="image/jpeg")
   content_type = guess_type(userdata.image.name)
   return HttpResponse(userdata.image, mimetype=content_type)
 
@@ -148,14 +147,20 @@ def delete_item(request, id):
 
 def item_single(request, id):
   item = Item.objects.get(id=id)
-  item_data = ItemData.objects.get(item=item)
+  owner = UserData.objects.get(user=item.user)
+  owner = {
+    'username': item.user.username,
+    'rep': owner.rep,
+    'loc': owner.loc
+  }
   trades = []
-  for trade in item_data.in_trades.all():
+  for trade in item.in_trades.all():
     trades.append(trade)
   trades.reverse()
   questions = ItemQuestion.objects.filter(item=item)
   return render(request, 'trade/item.html', {'item': item,
-                                             'trades': trades, 
+                                             'trades': trades,
+                                             'owner': owner, 
                                              'questions': questions})
 
 def item_question(request, id):
@@ -171,79 +176,120 @@ def item_question(request, id):
 ##########################
 
 @login_required
-def trade_action(request):
-  if 'action' not in request.GET:
-    # My trades screen
-    return my_trades(request)
-  else:
-    # execute some action
-    ac = request.GET['action']
-
-    if ac == 'start':
-      # create trade, redirect
-      user2 = User.objects.get(username=request.GET['with'])
-      newtrade = Trade(user1=request.user, user2=user2)
-      newtrade.status = 0
-      newtrade.save()
-      return redirect('/trade/new/' + str(newtrade.id));
-    elif ac == 'cancel':
-      try:
-        trade = Trade.objects.get(id=request.GET['id'])
-        trade.status = -2
-        for item in trade.items.all():
-          item_data = ItemData.objects.get(item=item)
-          item_data.in_trades.remove(trade)
-          if item_data.acc_trade == trade.id:
-            item.status = 0
-            item_data.acc_trade = 0
-            item.save()
-          item_data.save()
-        trade.save()
-      except ObjectDoesNotExist:
-        pass
-      return redirect('/trade') # show successful message
-    elif ac == 'accept':
-      try:
-        trade_id = int(request.GET['id'])
-        trade = Trade.objects.get(id=trade_id)
-        trade.status = 1
-        for item in trade.items.all():
-          item.status = -2
-          item_data = ItemData.objects.get(item=item)
-          item_data.acc_trade = trade.id
-          item_data.save()
-          item.save()
-        trade.save()
-      except ObjectDoesNotExist:
-        pass
-      return redirect('/trade/view/'+str(trade_id)) 
-    elif ac == 'modify':
-      try:
-        trade_id = request.GET['id']
-      except ObjectDoesNotExist:
-        redirect('/trade')
-      return trade_modify(request, trade_id) 
-    elif ac == 'received':
-      try:
-        trade_id = request.GET['id']
-        trade = Trade.objects.get(id=trade_id)
-        if (trade.status == 2) or (trade.status == 3):
-          # trade complete
-          trade.status = -1
-        elif trade.status == 1:
-          cur1 = 0
-          if request.user.id == trade.user1.id: cur1 = 1
-          if cur1: trade.status = 2
-          else: trade.status = 3
-        trade.save()
-      except ObjectDoesNotExist:
-        pass
-      return redirect('/trade/view/'+str(trade_id)) 
-    else:
-      return redirect('/trade')
+def trade_accept(request, id):
+  try:
+    trade = Trade.objects.get(id=id)
+    trade.status = 1
+    for item in Item.objects.filter(in_trades=trade):
+      item.status = -2
+      item.acc_trade = trade
+      item.save()
+    trade.save()
+  except ObjectDoesNotExist:
+    pass
+  return redirect('/trade/view/'+str(id))
 
 @login_required
-def trade_single(request, id):
+def trade_cancel(request, id):
+  try:
+    trade = Trade.objects.get(id=id)
+    trade.status = -2
+    for item in Item.objects.filter(in_trades=trade):
+      item.in_trades.remove(trade)
+      if item.acc_trade == trade.id:
+        item.status = 0
+        item.acc_trade = None
+        item.save()
+      item.save()
+    trade.save()
+  except ObjectDoesNotExist:
+    pass
+  return redirect('/trade?message=cancelled') # show successful message
+
+@login_required
+def trade_received(request, id):
+  try:
+    trade = Trade.objects.get(id=id)
+    if (trade.status == 2) or (trade.status == 3):
+      # trade complete
+      trade.status = -1
+    elif trade.status == 1:
+      cur1 = 0
+      if request.user.id == trade.user1.id: cur1 = 1
+      if cur1: trade.status = 2
+      else: trade.status = 3
+    trade.save()
+  except ObjectDoesNotExist:
+    pass
+  return redirect('/trade/view/'+str(id))
+
+@login_required
+def trade_new(request):
+  if request.method == 'GET':
+    return trade_new_get(request)
+  elif request.method == 'POST':
+    return trade_new_post(request)
+
+def trade_new_get(request):
+  # Sets up list of just the logged-in user's (request.user's) items
+  if 'with' not in request.GET or not request.GET['with']:
+    return redirect('/')
+
+  from_trade_items = []
+
+  if 'from' in request.GET:
+    from_trade = get_object_or_404(Trade, id=request.GET['from'])
+    from_trade_items = list(Item.objects.filter(in_trades=from_trade))
+
+  user1 = request.user
+  user2 = get_object_or_404(User, username=request.GET['with'])
+  user1selectitems = []
+  user1restitems = []
+  user1deaditems = []
+  user2selectitems = []
+  user2restitems = []
+  user2deaditems = []
+  items1 = Item.objects.filter(user=user1).filter(status__gte=0).order_by('-date_time')
+  items2 = Item.objects.filter(user=user2).filter(status__gte=0).order_by('-date_time')
+
+  for item in items1:
+    if item in from_trade_items:
+      user1selectitems.append(item)
+    else:
+      if item.status > 0:
+        user1deaditems.append(trade)
+      else: user1restitems.append(item)
+  for item in items2:
+    if item in from_trade_items:
+      user2selectitems.append(item)
+    else:
+      if item.status > 0:
+        user2deaditems.append(trade)
+      else: user2restitems.append(item)
+  return render(request, 'trade/new_trade.html', 
+    {
+      'user1': user1,
+      'user2': user2, 
+      'user1selectitems': user1selectitems,
+      'user2selectitems': user2selectitems,
+      'user1deaditems': user1deaditems,
+      'user1restitems': user1restitems,
+      'user2restitems': user2restitems,
+      'user2deaditems': user2deaditems,
+      'from': from_trade.id
+    })
+
+def trade_new_post(request):
+  # create trade, confirm trade
+  user2 = User.objects.get(id=request.POST['user2'])
+  newtrade = Trade(user1=request.user, user2=user2)
+  newtrade.status = 0
+  newtrade.save()
+
+  return trade_confirm(request, str(newtrade.id))
+
+@login_required
+def trade_x(request):
   # Sets up list of just the logged-in user's (request.user's) items
   trade = Trade.objects.get(id=id)
   user1selectitems = []
@@ -297,9 +343,9 @@ def trade_modify(request, id):
 @login_required
 def trade_confirm(request, id):
   trade = Trade.objects.get(id=id)
-  cur1 = 0 # 1 if user == user1, 0 ow
-  if request.user.id == trade.user1.id: cur1 = 1
+  cur1 = request.user.id == trade.user1.id
   def getItem(item_id): return Item.objects.get(id=item_id)
+
   if 'user1selectitems' in request.POST:
     user1selectitems = map(getItem, request.POST.getlist('user1selectitems'))
   else:
@@ -310,28 +356,17 @@ def trade_confirm(request, id):
     user2selectitems = []
 
   # update item status, user1 accepted
-
   for item in user1selectitems:
-    item_data = ItemData.objects.get(item=item)
-    item_data.in_trades.add(trade)
-    item_data.acc_trade = trade.id
-    item_data.save()
+    item.in_trades.add(trade)
+    item.acc_trade = trade
+    item.save()
   # add affiliated trade
   for item in user2selectitems:
-    item_data = ItemData.objects.get(item=item)
-    item_data.in_trades.add(trade)
-    item_data.save()
+    item.in_trades.add(trade)
+    item.save()
 
-  trade.items = user1selectitems + user2selectitems
   trade.save()
-  return render(request, 'trade/view_trade.html', 
-    {
-      'trade': trade,
-      'user1selectitems': user1selectitems,
-      'user2selectitems': user2selectitems,
-      'received': -1,
-      'cur1': cur1,
-    })
+  return redirect('/trade/' + id + '?created=true')
 
 @login_required
 def trade_view(request, id):
@@ -340,7 +375,7 @@ def trade_view(request, id):
   if request.user.id == trade.user1.id: cur1 = 1
   user1selectitems = []
   user2selectitems = []
-  for item in trade.items.all():
+  for item in Item.objects.filter(in_trades=trade):
     if item.user.id == trade.user1.id:
       user1selectitems.append(item)
     else:

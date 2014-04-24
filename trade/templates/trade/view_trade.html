@@ -36,17 +36,7 @@ You have successfully created your trade! Here it is:
   <ul class="item-list">
     <!-- these items are selected -->
     {% for item in user1selectitems %}
-      <li class="panel panel-default">
-        <div class="panel-body">
-          {% if item.image %}
-            <img src="{% url 'image' item.id %}">
-          {% endif %}
-          <div class="item-info">
-            <div class="item-desc"><a href="/item/{{item.id}}">{{item.desc}}</a></div>
-            Posted: {{item.date_time}}
-          </div>
-        </div>
-      </li>
+      {% include "trade/item_list_single.html" %}
     {% endfor %}
   </ul>
 
@@ -55,35 +45,25 @@ You have successfully created your trade! Here it is:
   <h3>{{trade.user2.username}}'s items</h3>
   <ul class="item-list">
     {% for item in user2selectitems %}
-      <li class="panel panel-default">
-        <div class="panel-body">
-          {% if item.image %}
-            <img src="{% url 'image' item.id %}">
-          {% endif %}
-          <div class="item-info">
-            <div class="item-desc"><a href="/item/{{item.id}}">{{item.desc}}</a></div>
-            Posted: {{item.date_time}}
-          </div>
-        </div>
-      </li>
+      {% include "trade/item_list_single.html" %}
     {% endfor %}
 
   </ul>
 
 {% if trade.status == 0 and not cur1 %}
-  <a href="/trade?action=accept&id={{trade.id}}" class="btn btn-primary">Accept trade</a> 
-  <a class="btn btn-warning" href="/trade?action=modify&id={{trade.id}}">
-    Cancel Trade and Create New Trade From Current Trade</a> 
+  <a href="/trade/{{trade.id}}/accept" class="btn btn-primary">Accept trade</a> 
+  <a class="btn btn-warning" href="/trade/new?with={{trade.user1.username}}&from={{trade.id}}">
+    Reoffer</a> 
 {% endif %}
 
 {% if trade.status == 0 %}
-  <a href="/trade?action=cancel&id={{trade.id}}" class="btn btn-danger">Cancel trade</a> 
+  <a href="/trade/{{trade.id}}/cancel" class="btn btn-danger">Cancel trade</a> 
 {% endif %}
 
 {% if trade.status > 0 %}
   {% if not received %}
     Have you received your items yet? Click if you have
-    <a class="btn btn-primary" href="/trade?action=received&id={{trade.id}}">HERE</a> 
+    <a class="btn btn-primary" href="/trade/{{trade.id}}/received">HERE</a> 
   {% endif %} <br>
 
   {% if trade.status == 2 %}

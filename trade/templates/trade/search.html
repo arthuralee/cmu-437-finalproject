@@ -14,23 +14,33 @@
 {% block content %}
 
 <h3>Search results for <strong>{{q}}</strong></h3>
+<hr>
 
+<h4>Items</h4>
 <ul class="item-list">
   {% for item in items %}
-    <li class="panel panel-default">
-      <div class="panel-body">
-        {% if item.image %}
-          <img src="{% url 'image' item.id %}">
-        {% endif %}
-        <div class="item-info">
-          <div class="item-desc">{{item.desc}}</div>
-          Posted: {{item.date_time}}<br>
-          By: <a href="/user/{{item.user.username}}">{{item.user.username}}</a>
-        </div>
-      </div>
-    </li>
+    {% include "trade/item_list_single.html" with showuser=True %}
   {% empty %}
     <p class="alert bg-warning">No results found</p>
   {% endfor %}
 </ul>
+
+{% if users %}
+  <h4>Users</h4>
+  <ul class="nav nav-pills nav-stacked">
+    {% for user_item in users %}
+      <li class="panel panel-default">
+        <a href="/user/{{user_item.username}}">
+          <div class="panel-body">
+            <img src="/image/user/{{user_item.username}}" width="40" height="40">
+            {{user_item.username}}
+          </div>
+        </a>
+      </li>
+    {% empty %}
+      <p class="alert bg-warning">No results found</p>
+    {% endfor %}
+  </ul>
+{% endif %}
+
 {% endblock %}

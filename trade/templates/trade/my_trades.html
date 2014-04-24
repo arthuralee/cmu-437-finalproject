@@ -12,144 +12,162 @@
 {% endblock %}
 
 {% block content %}
-  <h1>My trades</h1>
+<h1>My trades</h1>
 
-<p>
-  Trades waiting on a user to accept.
-  Trades that are....
-</p>
+<h3>pending trades</h3>
+<div class="row">
 
-  <div class="panel panel-primary">
-    <div class="panel-heading">
-      <h3 class="panel-title">waiting on them</h3>
+  <div class="col-md-6">
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h3 class="panel-title">waiting on them</h3>
+      </div>
+      <div class="panel-body">
+        <ul>
+          {% for trade in accepted_trades %}
+            <li>
+              {% if trade.user1.id == user.id %}
+                 <a href="/user/{{trade.user2.username}}">{{trade.user2.username}}</a>
+              {% else  %}
+                <a href="/user/{{trade.user1.username}}">{{trade.user1.username}}</a>.
+              {% endif %}
+              <a href="/trade/{{trade.id}}">View Trade</a>
+            </li>
+          {% empty %}
+            Nobody :(
+          {% endfor %}
+        </ul>
+      </div>
     </div>
-    <div class="panel-body">
-      <ul>
-        {% for trade in accepted_trades %}
-          <li>
-          {% if trade.user1.id == user.id %}
-             <a href="/user/{{trade.user2.username}}">{{trade.user2.username}}</a>
-          {% else  %}
-            <a href="/user/{{trade.user1.username}}">{{trade.user1.username}}</a>.
-          {% endif %}
-          <a href="/trade/view/{{trade.id}}">View Trade</a>
-        {% empty %}
-          Nobody :(
-        {% endfor %}
-      </ul>
+  </div>
+  
+  <div class="col-md-6">
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h3 class="panel-title">waiting on you</h3>
+      </div>
+      <div class="panel-body">
+        <ul>
+          {% for trade in notaccepted_trades %}
+            <li>
+            {% if trade.user1.id == user.id %}
+               <a href="/user/{{trade.user2.username}}">{{trade.user2.username}}</a>
+            {% else  %}
+              <a href="/user/{{trade.user1.username}}">{{trade.user1.username}}</a>.
+            {% endif %}
+            <a href="/trade/{{trade.id}}">View Trade</a>
+            </li>
+          {% empty %}
+            Nobody :(
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h3>trades in progress</h3>
+
+<div class="row">
+  <div class="col-md-6">
+    <div class="panel panel-success">
+      <div class="panel-heading">
+        <h3 class="panel-title">Trades that haven't received your items yet</h3>
+      </div>
+      <div class="panel-body">
+        <ul>
+         {% for trade in havenotreceived_trades %}
+            <li>
+              {% if trade.user1.id == user.id %}
+                 <a href="/user/{{trade.user2.username}}">{{trade.user2.username}}</a>
+              {% else  %}
+                <a href="/user/{{trade.user1.username}}">{{trade.user1.username}}</a>.
+              {% endif %}
+              <a href="/trade/{{trade.id}}">View Trade</a>
+            </li>
+          {% empty %}
+            Nobody :(
+          {% endfor %}
+        </ul>
+      </div>
     </div>
   </div>
 
-  <div class="panel panel-primary">
-    <div class="panel-heading">
-      <h3 class="panel-title">waiting on you</h3>
+  <div class="col-md-6">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">Trades that have received your items</h3>
+      </div>
+      <div class="panel-body">
+        <ul>
+          {% for trade in havereceived_trades %}
+            <li> 
+            {% if trade.user1.id == user.id %}
+               <a href="/user/{{trade.user1.username}}">{{trade.user2.username}}</a>
+            {% else  %}
+              <a href="/user/{{user.username}}">{{user.username}}</a>.
+            {% endif %}
+            <a href="/trade/{{trade.id}}" color_name="pink">View Trade</a>
+            </li>
+          {% empty %}
+            Nobody :(
+          {% endfor %}
+        </ul>
+      </div>
     </div>
-    <div class="panel-body">
-      <ul>
-        {% for trade in notaccepted_trades %}
-          <li>
-          {% if trade.user1.id == user.id %}
-             <a href="/user/{{trade.user2.username}}">{{trade.user2.username}}</a>
-          {% else  %}
-            <a href="/user/{{trade.user1.username}}">{{trade.user1.username}}</a>.
-          {% endif %}
-          <a href="/trade/view/{{trade.id}}">View Trade</a>
-        {% empty %}
-          Nobody :(
-        {% endfor %}
-      </ul>
+  </div>
+</div>
+
+<h3>inactive trades</h3>
+<div class="row">
+  <div class="col-md-6">
+    <div class="panel panel-success">
+      <div class="panel-heading">
+        <h3 class="panel-title">Completed Trades</h3>
+      </div>
+      <div class="panel-body">
+        <ul>
+         {% for trade in completed_trades %}
+            <li>
+            {% if trade.user1.id == user.id %}
+               <a href="/user/{{trade.user2.username}}">{{trade.user2.username}}</a>
+            {% else  %}
+              <a href="/user/{{trade.user1.username}}">{{trade.user1.username}}</a>.
+            {% endif %}
+            <a href="/trade/{{trade.id}}">View Trade</a>
+            </li>
+          {% empty %}
+            Nobody :(
+          {% endfor %}
+
+        </ul>
+      </div>
     </div>
   </div>
 
-<p>
-  Trades waiting on items to arrive.
-  Trades in progress
-</p>
-
-  <div class="panel panel-success">
-    <div class="panel-heading">
-      <h3 class="panel-title">Trades that haven't received your items yet</h3>
-    </div>
-    <div class="panel-body">
-      <ul>
-       {% for trade in havenotreceived_trades %}
-          <li>
-          {% if trade.user1.id == user.id %}
-             <a href="/user/{{trade.user2.username}}">{{trade.user2.username}}</a>
-          {% else  %}
-            <a href="/user/{{trade.user1.username}}">{{trade.user1.username}}</a>.
-          {% endif %}
-          <a href="/trade/view/{{trade.id}}">View Trade</a>
-        {% empty %}
-          Nobody :(
-        {% endfor %}
-      </ul>
+  <div class="col-md-6">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">Cancelled Trades</h3>
+      </div>
+      <div class="panel-body">
+        <ul>
+          {% for trade in cancelled_trades %}
+            <li> 
+            {% if trade.user1.id == user.id %}
+               <a href="/user/{{trade.user1.username}}">{{trade.user2.username}}</a>
+            {% else  %}
+              <a href="/user/{{user.username}}">{{user.username}}</a>.
+            {% endif %}
+            <a href="/trade/{{trade.id}}" color_name="pink">View Trade</a>
+            </li>
+          {% empty %}
+            Nobody :(
+          {% endfor %}
+        </ul>
+      </div>
     </div>
   </div>
-
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <h3 class="panel-title">Trades that have received your items</h3>
-    </div>
-    <div class="panel-body">
-      <ul>
-        {% for trade in havereceived_trades %}
-          <li> 
-          {% if trade.user1.id == user.id %}
-             <a href="/user/{{trade.user1.username}}">{{trade.user2.username}}</a>
-          {% else  %}
-            <a href="/user/{{user.username}}">{{user.username}}</a>.
-          {% endif %}
-          <a href="/trade/view/{{trade.id}}" color_name="pink">View Trade</a>
-        {% empty %}
-          Nobody :(
-        {% endfor %}
-      </ul>
-    </div>
-  </div>
-
-
-  <div class="panel panel-success">
-    <div class="panel-heading">
-      <h3 class="panel-title">Completed Trades</h3>
-    </div>
-    <div class="panel-body">
-      <ul>
-       {% for trade in completed_trades %}
-          <li>
-          {% if trade.user1.id == user.id %}
-             <a href="/user/{{trade.user2.username}}">{{trade.user2.username}}</a>
-          {% else  %}
-            <a href="/user/{{trade.user1.username}}">{{trade.user1.username}}</a>.
-          {% endif %}
-          <a href="/trade/view/{{trade.id}}">View Trade</a>
-        {% empty %}
-          Nobody :(
-        {% endfor %}
-      </ul>
-    </div>
-  </div>
-
-
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <h3 class="panel-title">Cancelled Trades</h3>
-    </div>
-    <div class="panel-body">
-      <ul>
-        {% for trade in cancelled_trades %}
-          <li> 
-          {% if trade.user1.id == user.id %}
-             <a href="/user/{{trade.user1.username}}">{{trade.user2.username}}</a>
-          {% else  %}
-            <a href="/user/{{user.username}}">{{user.username}}</a>.
-          {% endif %}
-          <a href="/trade/view/{{trade.id}}" color_name="pink">View Trade</a>
-        {% empty %}
-          Nobody :(
-        {% endfor %}
-      </ul>
-    </div>
-  </div>
+</div>
 
 {% endblock %}

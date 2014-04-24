@@ -30,31 +30,22 @@
     {% if user.id == profile_user.id %}
       <button class="btn btn-primary" data-toggle="modal" data-target="#editModal">edit profile</button>
     {% else %}
-      <a class="btn btn-primary" href="/trade?action=start&with={{profile_user.username}}">start trade</strong></a>
+      <a class="btn btn-primary" href="/trade/new?with={{profile_user.username}}">start trade</strong></a>
     {% endif %}
     <a class="btn btn-default" href="#">see reviews</a>
   </div>
 </div>
 
-<h3>catalog</h3>
+<h3>available items</h3>
 <ul class="item-list">
   {% for item in items %}
-    <li class="panel panel-default">
-      <div class="panel-body">
-        {% if item.image %}
-          <img src="{% url 'image' item.id %}">
-        {% endif %}
-        <div class="item-info">
-          <div class="item-desc"><a href="/item/{{item.id}}">{{item.desc}}</a></div>
-          Posted: {{item.date_time}}
-        </div>
-      </div>
-    </li>
+    {% include "trade/item_list_single.html" %}
   {% empty %}
     There are no items in your catalog. Add some!
   {% endfor %}
 </ul>
 
+{% if deaditems %}
 <h3>traded items</h3>
 <ul class="item-list">
   {% for item in deaditems %}
@@ -69,10 +60,9 @@
         </div>
       </div>
     </li>
-  {% empty %}
-    No past items
   {% endfor %}
 </ul>
+{% endif %}
 
 {% if user.id == profile_user.id %}
   <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-hidden="true">

@@ -10,7 +10,7 @@ admin.autodiscover()
  
 urlpatterns = patterns('',
     url(r'^', include('trade.urls')),
-    url(r'^image/(?P<id>\d+)$', 'trade.views.get_image', name='image'),
+    url(r'^image/(?P<id>\d+)$', 'trade.views.get_item_image', name='image'),
     url(r'^image/user/(?P<username>.+)$', 'trade.views.get_user_image', name='user_image'),
     url(r'^admin/', include(admin.site.urls)),
 )

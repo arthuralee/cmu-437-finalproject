@@ -56,33 +56,32 @@
 .item-list {
   list-style-type: none;
   margin: 0;
-  padding: 0;
-}
-.item-list:after {
-  content: " ";
-  display: table;
-  clear: both;
+  padding: 10px;
 }
   .item-list li {
-    margin-left: 2px;
-    margin-right: 2px;
-    padding: 0;
-    width: 207px;
-    height: 280px;
-    float: left;
+    width: 190px;
+    height: 210px;
+    padding: 10px;
+    margin-bottom: 4px;
+    display: inline-block;
     position: relative;
+    border: 1px solid #ddd;
+  }
+  .item-list li input {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+  .item-list .img {
+    margin: 5px auto;
+    height: 120px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
   }
   .item-list img {
     margin: auto;
     display: block;
-  }
-  .item-info {
-    position: absolute;
-    top: 180px;
-    width: 190px;
-    word-wrap: break-word;
-    font-size: 10px;
-    color: #999;
   }
   .item-desc {
     font-size: 14px;

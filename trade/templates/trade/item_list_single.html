@@ -1,0 +1,21 @@
+{% load timesince_human %}
+
+<li>
+  <div class="img" style="background-image: url({% url 'image' item.id %})">
+  </div>
+  <div class="item-desc">
+    <a href="/item/{{item.id}}">
+      {{item.desc|truncatechars:20}}<br>
+    </a>
+    <small>{{item.date_time|timesince_human}} - #{{item.id}}<br>
+      {% if manage %}
+        <a href="/item/{{item.id}}/delete">unlist</a>
+      {% elif showuser %}
+        by <a href="/user/{{item.user.username}}">{{item.user.username}}</a>
+      {% endif %}
+    </small>
+  </div>
+  {% if attr %}
+    <input type="checkbox" {{attr}} name="{{checkname}}" value="{{item.id}}">
+  {% endif %}
+</li>

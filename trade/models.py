@@ -3,19 +3,6 @@ from django.db import models
 # User class for built-in authentication module
 from django.contrib.auth.models import User
 
-class Item(models.Model):
-  desc = models.CharField(max_length=200)
-  longdesc = models.CharField(max_length=1000)
-  user = models.ForeignKey(User)
-  date_time = models.DateTimeField(auto_now=True)
-  image = models.ImageField(upload_to="items", blank=True)
-  status = models.IntegerField(default=0)
-  # < 0 : dead
-  # == 0: available
-  # > 0: in trade
-  def __unicode__(self):
-	 return self.desc
-
 class UserData(models.Model):
   user = models.OneToOneField(User)
   loc = models.CharField(max_length=255)
@@ -25,7 +12,6 @@ class UserData(models.Model):
 class Trade(models.Model):
   user1 = models.ForeignKey(User, related_name='user1')
   user2 = models.ForeignKey(User, related_name='user2')
-  items = models.ManyToManyField(Item)
   date_created = models.DateTimeField(auto_now=True)
   date_completed = models.DateTimeField(blank=True, null=True)
   status = models.IntegerField(default=0)
@@ -38,10 +24,20 @@ class Trade(models.Model):
   # -1 -> complete
   # -2 -> cancelled
 
-class ItemData(models.Model):
-  item = models.OneToOneField(Item)
-  in_trades = models.ManyToManyField(Trade)
-  acc_trade = models.IntegerField(default=0)
+class Item(models.Model):
+  desc = models.CharField(max_length=200)
+  longdesc = models.CharField(max_length=1000)
+  user = models.ForeignKey(User)
+  date_time = models.DateTimeField(auto_now=True)
+  image = models.ImageField(upload_to="items", blank=True)
+  in_trades = models.ManyToManyField(Trade, blank=True)
+  acc_trade = models.ForeignKey(Trade, blank=True, null=True, related_name="acc_trade")
+  status = models.IntegerField(default=0)
+  # < 0 : dead
+  # == 0: available
+  # > 0: in trade
+  def __unicode__(self):
+   return self.desc
 
 class TradeMsg(models.Model):
   date = models.DateTimeField(auto_now=True)
