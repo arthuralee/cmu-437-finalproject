@@ -64,6 +64,7 @@ def profile(request, id):
   # Sets up list of just the logged-in user's (request.user's) items
   user = User.objects.get(username=id)
   userdata = UserData.objects.get(user=user)
+  userreviews = UserReview.objects.filter(reviewee=user).order_by('-date_time')
   all_items = Item.objects.filter(user=user)
   items = all_items.filter(status__gte=0).order_by('-date_time')
   deaditems = all_items.exclude(status__gte=0).order_by('-date_time')
@@ -79,7 +80,8 @@ def profile(request, id):
   return render(request, 'trade/profile.html', 
     {'items' : items,
      'deaditems': deaditems,
-     'profile_user': user}
+     'profile_user': user,
+     'reviews': userreviews}
     )
 
 @login_required

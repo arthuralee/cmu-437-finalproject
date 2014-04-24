@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load timesince_human %}
 
 {% block title %} Profile {% endblock %}
 
@@ -32,7 +33,7 @@
     {% else %}
       <a class="btn btn-primary" href="/trade/new?with={{profile_user.username}}">start trade</strong></a>
     {% endif %}
-    <a class="btn btn-default" href="#">see reviews</a>
+    <button class="btn btn-default" data-toggle="modal" data-target="#reviewModal">see reviews</button>
   </div>
 </div>
 
@@ -54,6 +55,44 @@
 </ul>
 {% endif %}
 
+<div class="modal fade" id="reviewModal" tabindex="-2" role="dialog" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myModalLabel">Reviews for {{profile_user.username}}</h4>
+      </div>
+      <div class="modal-body">
+        {% for review in reviews %}
+          {% if review.rating == -1 %}
+            <div class="panel panel-danger">
+              <div class="panel-heading"><span class="glyphicon glyphicon-thumbs-down"></span> &bull; {{review.reviewer}} &bull; {{review.date_time|timesince_human}}</div>
+              <div class="panel-body">
+                {{review.body}}
+              </div>
+            </div>
+          {% elif review.rating == 0 %}
+            <div class="panel panel-warning">
+              <div class="panel-heading"><span class="glyphicon glyphicon-minus"></span> &bull; {{review.reviewer}} &bull; {{review.date_time|timesince_human}}</div>
+              <div class="panel-body">
+                {{review.body}}
+              </div>
+            </div>
+          {% else %}
+            <div class="panel panel-success">
+              <div class="panel-heading"><span class="glyphicon glyphicon-thumbs-up"></span> &bull; {{review.reviewer}} &bull; {{review.date_time|timesince_human}}</div>
+              <div class="panel-body">
+                {{review.body}}
+              </div>
+            </div>
+          {% endif %}
+        {% empty %}
+          No reviews for this user yet
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
 {% if user.id == profile_user.id %}
   <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
