@@ -195,6 +195,7 @@ def item_single(request, id):
                                              'questions': questions,
                                              'is_owner': is_owner})
 
+@login_required
 def item_question(request, id):
   if request.method == 'POST':
     item = get_object_or_404(Item, id=id)
@@ -203,6 +204,7 @@ def item_question(request, id):
     return redirect('/item/' + str(id))
   return redirect('/')
 
+@login_required
 def item_answer(request, id):
   if request.method == 'POST':
     q = ItemQuestion.objects.get(item=get_object_or_404(Item, id=id))
@@ -232,12 +234,14 @@ def trade_accept(request, id):
   return redirect('/trade/'+str(id))
 
 # cancel all trades associated with item, except trade with id id
+@login_required
 def cancel_trades_with_item(item, id):
   for trade in item.in_trades.all():
     if trade.id != id:
       cancel_trade(trade)
   return
 
+@login_required
 def cancel_trade(trade):
   trade.status = -2
   for item in Item.objects.filter(in_trades=trade):
@@ -298,6 +302,7 @@ def trade_new(request):
   elif request.method == 'POST':
     return trade_new_post(request)
 
+@login_required
 def trade_new_get(request):
   context = {}
   # Sets up list of just the logged-in user's (request.user's) items
@@ -349,6 +354,7 @@ def trade_new_get(request):
   context['user2semideaditems'] = user2semideaditems
   return render(request, 'trade/new_trade.html', context)
 
+@login_required
 def trade_new_post(request):
   # create trade, confirm trade
   user2 = get_object_or_404(User, id=request.POST['user2'])
@@ -414,6 +420,7 @@ def trade_view(request, id):
       'cur1': cur1,
     })
 
+@login_required
 def trade_message(request, id):
   result = {}
   trade = get_object_or_404(Trade, id=id)
@@ -432,6 +439,7 @@ def trade_message(request, id):
 
   return HttpResponse(json.dumps(result), content_type="application/json")
 
+@login_required
 def my_trades(request):
   trades = Trade.objects.filter(Q(user1=request.user) | Q(user2=request.user))
   accepted = []
