@@ -1,0 +1,5 @@
+{{header}}
+
+{{body}}
+
+Trade link: {{trade_link}}

@@ -1,4 +1,9 @@
 from django.db import models
+from django.db.models.signals import pre_save, post_save
+from django.dispatch import receiver
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import get_template
+from django.template import Context
 
 # User class for built-in authentication module
 from django.contrib.auth.models import User
@@ -58,3 +63,53 @@ class UserReview(models.Model):
   rating = models.IntegerField()
   body = models.CharField(max_length=1000)
   date_time = models.DateTimeField(auto_now_add=True, null=True)
+
+@receiver(pre_save, sender=Trade)
+def trade_state_change(sender, **kwargs):
+  if not kwargs.get('instance', False): return
+  
+  trade = kwargs.get('instance')
+  id = trade.id
+  status = trade.status
+
+  try:
+    old_trade = Trade.objects.get(id=id)
+    if old_trade.status == status: return
+  except Trade.DoesNotExist:
+    pass
+
+  if status == 0:
+    return
+  elif status == 1:
+    header = "Trade #" + str(id) + " accepted by " + trade.user2.username
+    body = "Your trade request has been accepted by " + trade.user1.username + '. You may now exchange your items.'
+    to = [trade.user1.email]
+  elif status == 2:
+    header = "Trade #" + str(id) + ": Items received by " + trade.user1.username
+    body = "Your items have been received by " + trade.user1.username + '. Remember to mark trade as completed when you receive your items.'
+    to = [trade.user2.email]
+  elif status == 3:
+    header = "Trade #" + str(id) + ": Items received by " + trade.user2.username
+    body = "Your items have been received by " + trade.user2.username + '. Remember to mark trade as completed when you receive your items.'
+    to = [trade.user1.email]
+  elif status == -1:
+    header = "Trade #" + str(id) + " completed"
+    body = "Congratulations! Trade #" + str(id) + " involving " + trade.user1.username + ' and '  + trade.user2.username +  ' is now complete.'
+    to = [trade.user1.email, trade.user2.email]
+  elif status == -2:
+    header = "Trade #" + str(id) + " cancelled"
+    body = "Unfortunately, trade #" + str(id) + " involving " + trade.user1.username + ' and '  + trade.user2.username +  ' has been cancelled.'
+    to = [trade.user1.email, trade.user2.email]
+
+  plaintext = get_template('email-notif.txt')
+  htmly     = get_template('email-notif.html')
+
+  trade_link = 'https://tradingpost.ngrok.com/trade/' + str(id)
+  d = Context({ 'header': header, 'body': body, 'trade_link':trade_link })
+
+  subject, from_email = 'Trading Post', 'no-reply@tradingpost.ngrok.com'
+  text_content = plaintext.render(d)
+  html_content = htmly.render(d)
+  msg = EmailMultiAlternatives(subject, text_content, from_email, to)
+  msg.attach_alternative(html_content, "text/html")
+  msg.send()

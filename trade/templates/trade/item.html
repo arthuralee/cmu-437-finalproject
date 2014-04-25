@@ -83,7 +83,7 @@
   <p>No questions asked so far</p>
   {% endfor %}
 
-  {% if not is_owner %}
+  {% if not is_owner and user.is_authenticated %}
     <form class="form-inline" role="form" method="post" action="/item/{{item.id}}/question">
       <div class="form-group">
         <input type="text" class="form-control" name="q" placeholder="Ask a question" autocomplete="off" size="84" />

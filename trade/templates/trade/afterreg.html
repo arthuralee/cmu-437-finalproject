@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block errors %}
+  {% for error in errors %}
+    <p class="alert alert-danger">
+    {{error}}
+    </p>
+  {% endfor %}
+{% endblock %}
+
+
+{% block content %}
+
+<h1>You're almost there</h1>
+We've sent you a verification email to confirm your email address. Please click the link in the email to activate your account. The email could take up to one hour to arrive.
+
+{% endblock %}

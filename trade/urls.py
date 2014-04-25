@@ -29,7 +29,5 @@ urlpatterns = patterns('',
     url(r'^verify$', 'trade.views.verify'),
     url(r'^manage$', 'trade.views.manage'),
 
-    # REMOVE ME
-    url(r'^bitch$', 'trade.views.bitch'),
-    url(r'^bitch2$', 'trade.views.bitch2'),
+    url(r'^afterreg$', 'trade.views.afterreg'),
 )

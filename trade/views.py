@@ -10,7 +10,6 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth import login, authenticate
-from django.core.mail import send_mail
 from django.core import serializers
 from django.db.models import Q
 from django.utils.datastructures import MultiValueDictKeyError
@@ -18,22 +17,16 @@ from django.utils.datastructures import MultiValueDictKeyError
 from mimetypes import guess_type
 from django.http import HttpResponse, Http404
 
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import get_template
+from django.template import Context
+
 from trade.models import *
 import json
 import re
 
-def bitch(request):
-  for trade in Trade.objects.all():
-    trade.delete()
-  return redirect('/')
-
-def bitch2(request):
-  for item in Item.objects.all():
-    item.in_trades = []
-    item.acc_trade = None
-    item.status = 0
-    item.save()
-  return redirect('/')
+def afterreg(request):
+  return render(request, 'trade/afterreg.html', {})
 
 def home(request):
   context = {}
@@ -154,7 +147,6 @@ def get_item_image(request, id):
   content_type = guess_type(item.image.name)
   return HttpResponse(item.image, mimetype=content_type)
 
-@login_required
 def get_user_image(request, username):
   user = get_object_or_404(User, username=username)
   userdata = UserData.objects.get(user=user)
@@ -208,6 +200,8 @@ def item_question(request, id):
 def item_answer(request, id):
   if request.method == 'POST':
     q = ItemQuestion.objects.get(item=get_object_or_404(Item, id=id))
+    if request.user != q.item.user:
+      raise Http404
     q.a = request.POST['answer']
     q.save()
     return redirect('/item/' + str(id))
@@ -237,11 +231,10 @@ def trade_accept(request, id):
 @login_required
 def cancel_trades_with_item(item, id):
   for trade in item.in_trades.all():
-    if trade.id != id:
+    if (trade.id != id) and (trade.status == 0) :
       cancel_trade(trade)
   return
 
-@login_required
 def cancel_trade(trade):
   trade.status = -2
   for item in Item.objects.filter(in_trades=trade):
@@ -257,6 +250,8 @@ def cancel_trade(trade):
 def trade_cancel(request, id):
   try:
     trade = get_object_or_404(Trade, id=id)
+    if trade.status < 0 or trade.status > 1:
+      raise Http404
     if not((trade.user2.id == request.user.id) or (trade.user1.id == request.user.id)): 
       raise Http404
     cancel_trade(trade)
@@ -308,6 +303,9 @@ def trade_new_get(request):
   # Sets up list of just the logged-in user's (request.user's) items
   if 'with' not in request.GET or not request.GET['with']:
     return redirect('/')
+
+  if request.GET['with'] == request.user.username:
+    raise Http404
 
   from_trade_items = []
 
@@ -560,21 +558,31 @@ def register(request):
                                       first_name=request.POST['first_name'],
                                       last_name=request.POST['last_name'],
                                       email=request.POST['email'])
-  #new_user.is_active=False
-  new_user.is_active=True
+  new_user.is_active=False
   new_user.save()
-  new_userWithFollowers = UserWithFollowers(user=new_user)
-  new_userWithFollowers.save();
+  new_userData = UserData(user=new_user)
+  new_userData.save();
   token = default_token_generator.make_token(new_user)
-  verif_url = "http://localhost:8000/verify?token="+token+"&username=" 
+  verif_url = "https://tradingpost.ngrok.com/verify?token="+token+"&username=" 
   verif_url += request.POST['username']
-  print verif_url
-  message = ("Hi " + new_user.first_name + "!\n"
-             "Thanks for signing up for microBlog. \n\nClick the following link" 
-             "to verify your email: \n") + verif_url + ("\nHave a "
-             "good day! \n\n-microBlog Team")
-  #send_mail('Blog Verification Email', message, 'microBlogTeam@andrew.cmu.edu', [request.POST['email']], fail_silently=False)
-  return redirect('/')
+
+
+
+  plaintext = get_template('email-reg.txt')
+  htmly     = get_template('email-reg.html')
+
+  d = Context({ 'first_name': new_user.first_name, 'verify_url': verif_url })
+
+  subject, from_email, to = 'Trading Post Verification', 'no-reply@tradingpost.ngrok.com', request.POST['email']
+  text_content = plaintext.render(d)
+  html_content = htmly.render(d)
+  msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
+  msg.attach_alternative(html_content, "text/html")
+  msg.send()
+
+
+
+  return redirect('/afterreg')
 
 def verify(request):
   context = {}

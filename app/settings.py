@@ -5,7 +5,7 @@ import os
 # Sets the project path as a variable to be used below
 PROJECT_ROOT = os.path.realpath(os.path.dirname(__file__)) + '/'
 
-DEBUG = False
+DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = ()
