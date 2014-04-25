@@ -20,7 +20,7 @@
       <h3>here are some recent items</h3>
       <ul class="item-list">
         {% for item in newitems %}
-          {% include "trade/item_list_single.html" %}
+          {% include "trade/item_list_single.html" with showuser=True %}
         {% endfor %}
       </ul>
     </div>
