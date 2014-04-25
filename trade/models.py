@@ -15,6 +15,7 @@ class UserData(models.Model):
   image = models.ImageField(upload_to="users", blank=True)
 
 class Trade(models.Model):
+  #id = models.IntegerField(primary_key=True)
   user1 = models.ForeignKey(User, related_name='user1')
   user2 = models.ForeignKey(User, related_name='user2')
   date_created = models.DateTimeField(auto_now=True)

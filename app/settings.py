@@ -2,10 +2,12 @@
 
 import os
 
+os.environ['HTTPS'] = "on"
+
 # Sets the project path as a variable to be used below
 PROJECT_ROOT = os.path.realpath(os.path.dirname(__file__)) + '/'
 
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = ()
