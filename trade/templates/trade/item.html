@@ -28,8 +28,10 @@
       <br><br>
       <h4>Status</h4>
       {% if user.id == item.user.id %}
-        {% if item.status < 0 %}
+        {% if item.status == -2 %}
           <span class="glyphicon glyphicon-lock gray" title="Only visible to you"></span> This item was traded away in <a href="/trade/{{item.acc_trade.id}}">Trade #{{item.acc_trade.id}}</a>
+        {% elif item.status < 0 %}
+          <span class="glyphicon glyphicon-lock gray" title="Only visible to you"></span> This item was unlisted by you.
         {% else %}
           <span class="glyphicon glyphicon-lock gray" title="Only visible to you"></span> This item is currently in the following active trades: <br>
           {% for trade in trades %}
@@ -44,7 +46,7 @@
         {% elif item.status > 0 %}
           Currently in {{trades|length}} accepted trade{{trades|length |pluralize}}.
         {% else %}
-          This item has already been traded
+          This item has already been traded or has been unlisted by the owner.
         {% endif %}
       {% endif %}
     </div>

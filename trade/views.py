@@ -169,7 +169,9 @@ def delete_item(request, id):
   errors = []
   # Deletes item if the logged-in user has an item matching the id
   item_to_delete = get_object_or_404(Item, id=id, user=request.user)
-  item_to_delete.delete()
+  cancel_trades_with_item(item_to_delete, None)
+  item_to_delete.status = -1
+  item_to_delete.save()
   return redirect('/manage')
 
 def item_single(request, id):
@@ -222,11 +224,30 @@ def trade_accept(request, id):
     for item in Item.objects.filter(in_trades=trade):
       item.status = -2
       item.acc_trade = trade
+      cancel_trades_with_item(item, trade.id)
       item.save()
     trade.save()
   except ObjectDoesNotExist:
     pass
   return redirect('/trade/'+str(id))
+
+# cancel all trades associated with item, except trade with id id
+def cancel_trades_with_item(item, id):
+  for trade in item.in_trades.all():
+    if trade.id != id:
+      cancel_trade(trade)
+  return
+
+def cancel_trade(trade):
+  trade.status = -2
+  for item in Item.objects.filter(in_trades=trade):
+    if item.acc_trade == trade:
+      item.status = 0
+      item.acc_trade = None
+      item.save()
+    item.save()
+  trade.save()
+  return
 
 @login_required
 def trade_cancel(request, id):
@@ -234,14 +255,7 @@ def trade_cancel(request, id):
     trade = get_object_or_404(Trade, id=id)
     if not((trade.user2.id == request.user.id) or (trade.user1.id == request.user.id)): 
       raise Http404
-    trade.status = -2
-    for item in Item.objects.filter(in_trades=trade):
-      if item.acc_trade == trade:
-        item.status = 0
-        item.acc_trade = None
-        item.save()
-      item.save()
-    trade.save()
+    cancel_trade(trade)
   except ObjectDoesNotExist:
     pass
   return redirect('/trade?message=cancelled') # show successful message
