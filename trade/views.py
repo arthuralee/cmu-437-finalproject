@@ -81,8 +81,8 @@ def search(request):
 @login_required
 def manage(request):
   # Sets up list of just the logged-in user's (request.user's) items
-  items = Item.objects.filter(user=request.user).order_by('-date_time')
-  return render(request, 'trade/manage.html', {'items' : items})
+  items = Item.objects.filter(user=request.user).order_by('status')
+  return render(request, 'trade/manage.html', {'items' : items.reverse()})
 
 @login_required
 def profile(request, id):

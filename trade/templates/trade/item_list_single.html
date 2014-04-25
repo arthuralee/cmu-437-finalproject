@@ -9,7 +9,11 @@
     </a>
     <small>{{item.date_time|timesince_human}} - #{{item.id}}<br>
       {% if manage %}
+        {% if item.status >= 0 %}
         <a onclick="launchDeleteModal('{{item.desc}}',{{item.id}})" href="javascript:;">unlist</a>
+        {% else %}
+        &nbsp;
+        {% endif %}
       {% elif showuser %}
         by <a href="/user/{{item.user.username}}">{{item.user.username}}</a>
       {% endif %}
