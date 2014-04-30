@@ -34,7 +34,7 @@
           <span class="glyphicon glyphicon-lock gray" title="Only visible to you"></span> This item was unlisted by you.
         {% else %}
           <span class="glyphicon glyphicon-lock gray" title="Only visible to you"></span> This item is currently in the following active trades: <br>
-          {% for trade in trades %}
+          {% for trade in activetrades %}
             <a href="/trade/{{trade.id}}">Trade #{{trade.id}}</a> <br>
           {% empty %}
             None
@@ -42,9 +42,9 @@
         {% endif %}
       {% else %}
         {% if item.status == 0 %}
-          Currently in {{trades|length}} pending trade{{trades|length |pluralize}}
+          Currently in {{activetrades|length}} pending trade{{activetrades|length |pluralize}}
         {% elif item.status > 0 %}
-          Currently in {{trades|length}} accepted trade{{trades|length |pluralize}}.
+          Currently in {{activetrades|length}} accepted trade{{activetrades|length |pluralize}}.
         {% else %}
           This item has already been traded or has been unlisted by the owner.
         {% endif %}
